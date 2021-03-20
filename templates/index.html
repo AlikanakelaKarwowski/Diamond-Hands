@@ -1,36 +1,62 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Diamond Hands</title>
+
 {% endblock %}
 
 {% block body %}
 <div class="content">
-    <h1>Task Manager</h1>
-
-    <table>
-        <tr>
-            <th>Task</th>
-            <th>Added</th>
-            <th>Actions</th>
-        </tr>
-        {% for task in tasks %}
+    <h1>Stock predictor</h1>
+    <center>
+    <form action="">
+        <table>
             <tr>
-                <td>{{ task.content }}</td>
-                <td>{{ task.data_created.date() }}</td>
+                <th>Stock</th>
+                <th>Time (years)</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td><select name="Stock">
+                        <option value="smp">SMP</option>
+                        <option value="dow">DOW</option>
+                        <option value="nasdaq">nasdaq</option>
+                    </select>
+                </td>
                 <td>
-                    <a href="">Delete</a>
-                    <br>
-                    <a href="">Update</a>
+                    <select name="Time">
+                        <option value="5t">5</option>
+                        <option value="10t">10</option>
+                        <option value="15t">15</option>
+                        <option value="20t">20</option>
+                        <option value="25t">25</option>
+                        <option value="30t">30</option>
+                        <option value="35t">35</option>
+                        <option value="40t">40</option>
+                        <option value="45t">45</option>
+                        <option value="50t">50</option>
+                    </select>
+                </td>
+                <td>
+                    <form action="/" method="POST">
+                        <input type="submit" value="predict">
+                    </form>
                 </td>
             </tr>
-        {% endfor %}
-    </table>
-
-    <form action="/" method="POST">
-        <input type="text" name="content" id="content">
-        <input type="submit" value="Add Task">
+        </table>
     </form>
+    </center>
 
 </div>
+<!-- <div style="text-align: center;">
+    <label for="Stock">Stock: </label>
+    <select name="Stock">
+        <option value="smp">SMP</option>
+        <option value="dow">DOW</option>
+        <option value="nasdaq">nasdaq</option>
+    </select>
+    <br>
+    <input type="select" min="1" max="100" value="1" class="slider" id="myRange">
+</div> -->
+
+
 {% endblock %}
