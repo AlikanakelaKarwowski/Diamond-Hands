@@ -9,7 +9,7 @@
     <h1>Stock predictor</h1>
     <center>
     <form action="">
-        <table>
+        <table style="background: white;">
             <tr>
                 <th>Stock</th>
                 <th>Time (years)</th>
@@ -24,16 +24,12 @@
                 </td>
                 <td>
                     <select name="Time">
+                        <option value="1t">1</option>
+                        <option value="3t">3</option>
                         <option value="5t">5</option>
                         <option value="10t">10</option>
                         <option value="15t">15</option>
                         <option value="20t">20</option>
-                        <option value="25t">25</option>
-                        <option value="30t">30</option>
-                        <option value="35t">35</option>
-                        <option value="40t">40</option>
-                        <option value="45t">45</option>
-                        <option value="50t">50</option>
                     </select>
                 </td>
                 <td>
@@ -45,18 +41,13 @@
         </table>
     </form>
     </center>
-
 </div>
-<!-- <div style="text-align: center;">
-    <label for="Stock">Stock: </label>
-    <select name="Stock">
-        <option value="smp">SMP</option>
-        <option value="dow">DOW</option>
-        <option value="nasdaq">nasdaq</option>
-    </select>
-    <br>
-    <input type="select" min="1" max="100" value="1" class="slider" id="myRange">
-</div> -->
+
+<div>
+    <center>
+    <img src="/plot.png" alt="Temp Image for testing">
+    </center>
+</div>
 
 
 {% endblock %}
