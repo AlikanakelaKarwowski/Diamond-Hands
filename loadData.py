@@ -31,7 +31,7 @@ Loads Data from Yahoo Finance
 			to False will split datasets in a random way
 	test size(float) ratio of test to train
 """
-def loadData(ticker, n_steps=25, scale=True, shuffle=True, predict_step=1, split_by_date=True, test_size=0.2):
+def loadData(ticker, n_steps=25, scale=True, predict_step=1, split_by_date=True, test_size=0.2):
 
 	feature_columns=['adjclose', 'volume', 'open', 'high', 'low']
 	#Use all features from yahooFinance
@@ -100,13 +100,9 @@ def loadData(ticker, n_steps=25, scale=True, shuffle=True, predict_step=1, split
 		result["y_train"] = y[:train_samples]
 		result["X_test"]  = X[train_samples:]
 		result["y_test"]  = y[train_samples:]
-		if shuffle:
-			# shuffle the datasets for training (if shuffle parameter is set)
-			shuffle_in_unison(result["X_train"], result["y_train"])
-			shuffle_in_unison(result["X_test"], result["y_test"])
 	else:	
 		# split the dataset randomly
-		result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, test_size=test_size, shuffle=shuffle)
+		result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, test_size=test_size, shuffle=False)
 
 	#get tesat dates
 	dates = result["X_test"][:, -1, -1]
