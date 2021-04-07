@@ -214,9 +214,8 @@ EPOCHS = 100
 ticker = "AMZN"
 ticker_data_filename = os.path.join("data", f"{ticker}_{date_now}.csv")
 # model name to save, making it as unique as possible based on parameters
-model_name = f"{date_now}_{ticker}-{shuffle_str}-{scale_str}-{split_by_date_str}-{LOSS}-{OPTIMIZER}-{CELL.__name__}-seq-{N_STEPS}-step-{LOOKUP_STEP}-layers-{N_LAYERS}-units-{UNITS}"
-if BIDIRECTIONAL:
-    model_name += "-b"
+model_name = f"{date_now}_{ticker}"
+
 
 
 # In[22]:
