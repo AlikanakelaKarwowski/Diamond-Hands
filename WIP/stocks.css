@@ -112,6 +112,37 @@ body{
 
 .stock-options-time{
    margin-left: 20px;
+   color: #b2b2b2;
+}
+
+.col-md-4-control-label{
+    margin-top: 50px;
+}
+
+.col-md-5{
+    margin-top: 20px;
+    width: 100%;
+}
+
+.sub-btn{
+    width: 80%;
+    height: 30px;
+    margin-left: 40px;
+    margin-top: 30px;
+}
+
+.TimeSelector{
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+.stock-graph{
+    width: 500px;
+    height: 500px;
+    background: aqua;
+    position: absolute;
+    margin-top: -400px;
+    margin-left: 1000px;
 }
 
 
