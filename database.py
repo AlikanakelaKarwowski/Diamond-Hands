@@ -14,5 +14,15 @@ sqlQuery1 = """ CREATE TABLE IF NOT EXISTS users (
 )"""
 cursor.execute(sqlQuery1)
 
+sqlQuery2 = """ CREATE TABLE IF NOT EXISTS models (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	lookup_step INTEGER NOT NULL,
+	stock TEXT NOT NULL,
+	n_steps INTEGER NOT NULL,
+	updateDate DATE NOT NULL, 
+	modelName TEXT NOT NULL)
+"""
+cursor.execute(sqlQuery2)
+
 print("Table created successfully")
 conn.close()
