@@ -10,6 +10,7 @@ import database
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///test.db'
+app.config['SECRET_KEY'] = "random string"
 db = SQLAlchemy(app)
 
 # 157.230.63.172 
