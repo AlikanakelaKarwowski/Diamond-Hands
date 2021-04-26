@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, Response, flash
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -10,9 +10,9 @@ import sqlite3 as sql
 import database
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///test.db'
+#app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///test.db'
 app.config['SECRET_KEY'] = "random string"
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
 
 # 157.230.63.172 
 @app.route("/", methods=['POST', 'GET'])
@@ -44,10 +44,44 @@ def about():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    if request.method == 'POST':
-        stock_info = request.form['content']
     return render_template('login.html')
+    #if request.method == 'POST':
+    #stock_info = request.form['content']
 
+@app.route('/loginAttempt', methods=['POST', 'GET'])
+def loginAttempt():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        #Check if user is in database
+        try:
+            con = sql.connect("database.db")
+            con.row_factory = sql.Row
+    
+            cur = con.cursor()
+            cur.execute("select * from users")
+
+            rows = cur.fetchall()
+            data = 0
+            for row in rows:
+                if username in row:
+                    data = 1
+            
+            if data == 1:
+                print("User found")
+            else:
+                print("User not found")
+
+        except:
+            print("Something went wrong")
+        finally:
+            print("Finished")
+        msg = "login successful"
+        return render_template("result.html", msg = msg)
+    else:
+        msg = "idk"
+        return render_template("result.html", msg = msg)
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
@@ -111,7 +145,6 @@ def list():
     
     rows = cur.fetchall(); 
     return render_template("list.html",rows = rows)
-
 
 @app.route("/mypage", methods=['POST', 'GET'])
 def mypage():
