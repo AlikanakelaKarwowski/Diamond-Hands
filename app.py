@@ -146,14 +146,8 @@ def signupAttempt():
                 flash('Username already exists', 'error')
                 msg="Email already exists"
                 return render_template('sign-up.html')
-
-            with sql.connect("database.db") as con:
-                cur = con.cursor()
-                
-                #insert into table
-                cur.execute("INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)", (name, username, email, password))
-                con.commit()
             
+            insertUser(name, username, email, password)
             msg = "Signup successful"
         except:
             msg = "Something went wrong"
@@ -258,6 +252,23 @@ def emailExists(email):
         print("Something went wrong when attempting to find the email in the database")
     finally:
         print("Finished finding email in database")
+
+def insertUser(name, username, email, password):
+#Insert new user into table
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+
+            #hash password using sha256
+            hashedPassword = generate_password_hash(password, method='sha256')
+
+            #insert user into table
+            cur.execute("INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)", (name, username, email, hashedPassword))
+            con.commit()
+    except:
+        print("Something went wrong attempting to insert user into database")
+    finally:
+        print("Successfully inserted user into database")
 
 
 if __name__ == "__main__":
