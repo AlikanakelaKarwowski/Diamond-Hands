@@ -1,9 +1,8 @@
 from model import *
-
+plt.ion()
 def makeModel(ticker):
-	return MyModel(90, ticker, epochs=25)
+	return MyModel(90, ticker, epochs=2, n_steps=50)
 
-#DJI
 AMZN = makeModel("AMZN")
 TSLA = makeModel("TSLA")
 NASDAQ = makeModel("^IXIC")

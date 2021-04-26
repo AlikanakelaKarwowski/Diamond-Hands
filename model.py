@@ -7,12 +7,14 @@ from sklearn.model_selection import train_test_split
 from yahoo_fin import stock_info as si
 from collections import deque
 
+import pytz
 import os
 import numpy as np
 import pandas as pd
 import random
 import os
 import time
+from datetime import date, datetime
 from tensorflow.keras.layers import LSTM
 import matplotlib.pyplot as plt
 
@@ -148,7 +150,7 @@ class MyModel:
 		return  self.model
 
 	#Define Parameters to set up stock
-	def define_model(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.4, epochs=100):
+	def define_model(self, lookup_step, stock, n_steps=100, test_size=0.2, n_layers = 2, units=256, dropout=0.4, epochs=100):
 
 		#Number of days used for each prediction
 		 self.N_STEPS = n_steps
@@ -163,7 +165,8 @@ class MyModel:
 		 FEATURE_COLUMNS = ["adjclose", "volume", "open", "high", "low"]
 
 		#current date
-		 date_now = time.strftime("%Y-%m-%d")
+		 tz = pytz.timezone("US/Eastern")
+		 date_now = datetime.now(tz).date()
 
 		##model params
 		 N_LAYERS = n_layers
@@ -191,9 +194,10 @@ class MyModel:
 		 EPOCHS = epochs
 
 		 self.ticker = stock
-
+		 self.epochs = EPOCHS
+		 self.date = date_now
 		#model name to save
-		 ticker_d_filename = os.path.join("data", f"{self.ticker}_{date_now}.csv")
+		 ticker_d_filename = os.path.join("data", f"{self.ticker}_{date_now}_{self.LOOKUP_STEP}days.csv")
 		 self.model_name = f"{date_now}_{self.ticker}_{self.LOOKUP_STEP}days"
 
 
@@ -222,6 +226,7 @@ class MyModel:
 
 	#plolt true close price along with predicted close price in blue and red respectfully
 	def plot_graph(self, test_df):
+		plt.figure()
 		plt.plot(test_df[f'true_adjclose_{self.LOOKUP_STEP}'], c='b')
 		plt.plot(test_df[f'adjclose_{self.LOOKUP_STEP}'], c='r')
 		plt.xlabel("Days")
@@ -229,7 +234,8 @@ class MyModel:
 		plt.title(self.ticker)
 		plt.legend(["Actual Price", "Predicted Price"])
 		#plt.show()
-
+		plt.savefig("plots/{}_{}days_{}.png".format(self.ticker, self.LOOKUP_STEP, self.date), dpi=300)
+		#plt.close()
 		return plt
 
 
@@ -361,6 +367,8 @@ class MyModel:
 			os.mkdir("logs")
 		if not os.path.isdir("data"):
 			os.mkdir("data")
+		if not os.path.isdir("plots"):
+			os.mkdir("plots")
 
 
 		self.define_model(lookup_step, stock, n_steps=n_steps, test_size=test_size, n_layers=n_layers, units=units, dropout=dropout, epochs=epochs)
