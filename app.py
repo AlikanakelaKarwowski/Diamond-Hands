@@ -129,8 +129,10 @@ def signupAttempt():
             password = request.form['password']
             password2 = request.form['password2']
 
+            #Check if passwords match
             if password != password2:
                 flash('Passwords do not match', 'error')
+                msg="Passwords do not match"
                 return render_template('sign-up.html')
 
             #Check if username already exists
@@ -140,6 +142,10 @@ def signupAttempt():
                 return render_template('sign-up.html')
 
             #Check if email already exists
+            if emailExists(email):
+                flash('Username already exists', 'error')
+                msg="Email already exists"
+                return render_template('sign-up.html')
 
             with sql.connect("database.db") as con:
                 cur = con.cursor()
@@ -200,30 +206,59 @@ def create_figure(Stock, Time):
     return fig
 
 def usernameExists(username):
-    #Check if username is in database
-        try:
-            con = sql.connect("database.db")
-            con.row_factory = sql.Row
-    
-            cur = con.cursor()
-            cur.execute('SELECT * FROM users WHERE username=?', (username,))
-            row = cur.fetchone()
+    #Check if username is already in database
+    try:
+        con = sql.connect("database.db")
+        con.row_factory = sql.Row
 
-            data = 0
-            if row is not None:
-                if username in row:
-                    data = 1
-            
-            #User found in the database
-            if data == 1:
-                return True
-            else:
-                return False
+        cur = con.cursor()
+        cur.execute('SELECT * FROM users WHERE username=?', (username,))
+        row = cur.fetchone()
 
-        except:
-            print("Something went wrong when attempting to find the user in the database")
-        finally:
-            print("Finished finding user in database")
+        data = 0
+        if row is not None:
+            if username in row:
+                data = 1
+        
+        #User found in the database
+        if data == 1:
+            return True
+        #User not found in the database
+        else:
+            return False
+
+    except:
+        print("Something went wrong when attempting to find the user in the database")
+    finally:
+        print("Finished finding user in database")
+
+def emailExists(email):
+    #Check if email is already in database
+    try:
+        con = sql.connect("database.db")
+        con.row_factory = sql.Row
+
+        cur = con.cursor()
+        cur.execute('SELECT * FROM users WHERE email=?', (email,))
+        row = cur.fetchone()
+
+        data = 0
+        if row is not None:
+            if email in row:
+                data = 1
+        
+        #Email found in the database
+        if data == 1:
+            return True
+        #Email not found in the database
+        else:
+            return False
+
+    except:
+        print("Something went wrong when attempting to find the email in the database")
+    finally:
+        print("Finished finding email in database")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
