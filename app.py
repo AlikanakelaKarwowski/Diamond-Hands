@@ -1,10 +1,12 @@
-from flask import Flask, render_template, url_for, request, redirect, Response
+from flask import Flask, render_template, url_for, request, redirect, Response, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
 import random
+import sqlite3 as sql
+import database
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///test.db'
