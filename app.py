@@ -54,55 +54,16 @@ def loginAttempt():
         username = request.form['username']
         password = request.form['password']
 
-        '''
-        #Check if user is in database by select *
-        try:
-            con = sql.connect("database.db")
-            con.row_factory = sql.Row
-    
-            cur = con.cursor()
-            cur.execute("select * from users")
-
-            rows = cur.fetchall()
-            data = 0
-            for row in rows:
-                if username in row:
-                    data = 1
-
-            if data == 1:
-                print("User found")
-            else:
-                print("User not found")
-        except:
-            print("Something went wrong with method 1")
-        finally:
-            print("Finished with method 1")'''
-
         #Check if user is in database
         try:
-            con = sql.connect("database.db")
-            con.row_factory = sql.Row
-    
-            cur = con.cursor()
-            cur.execute('SELECT * FROM users WHERE username=?', (username,))
-            row = cur.fetchone()
-
-            data = 0
-            if row is not None:
-                if username in row:
-                    data = 1
-            
-            #User found in the database
-            if data == 1:
-                print("User found")
-
-            else:
-                print("User not found")
-
+            if not usernameExists(username):
+                flash('Username does not exist', 'error')
+                msg="Username does not exist"
+                return render_template('result.html', msg = msg)
         except:
-            print("Something went wrong finding the user in the database")
+            print("Something went wrong when logging in")
         finally:
-            print("Finished finding user in database")
+            print("Finished logging in")
         msg = "login successful"
         return render_template("result.html", msg = msg)
     else:
