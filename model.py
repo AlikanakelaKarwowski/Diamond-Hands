@@ -42,8 +42,6 @@ class MyModel:
 		Params:
 			ticker (str/pd.DataFrame): the ticker you want to load, examples include AAPL, TESL, etc.
 			n_steps (int): the historical sequence length (i.e window size) used to predict, default is 50
-			scale (bool): whether to scale prices from 0 to 1, default is True
-			shuffle (bool): whether to shuffle the dataset (both training & testing), default is True
 			lookup_step (int): the future lookup step to predict, default is 1 (e.g next day)
 			split_by_date (bool): whether we split the dataset into training/testing by date, setting it 
 				to False will split datasets in a random way
@@ -119,7 +117,7 @@ class MyModel:
 		else:	
 			# split the dataset randomly
 			result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, 
-																					test_size=test_size, shuffle=shuffle)
+																					test_size=test_size)
 		# get the list of test set dates
 		dates = result["X_test"][:, -1, -1]
 		# retrieve test features from the original dataframe
@@ -200,8 +198,12 @@ class MyModel:
 		 ticker_d_filename = os.path.join("data", f"{self.ticker}_{date_now}_{self.LOOKUP_STEP}days.csv")
 		 self.model_name = f"{date_now}_{self.ticker}_{self.LOOKUP_STEP}days"
 
+		 # At 6 months and longer a larger range of test data becomes more and more important than just simply using hte end of the tail
+		 split_by_date = True
+		 if self.LOOKUP_STEP > 179:
+		 	split_by_date = False
 
-		 self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step= self.LOOKUP_STEP, test_size= TEST_SIZE, feature_columns=FEATURE_COLUMNS)
+		 self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step= self.LOOKUP_STEP, test_size= TEST_SIZE, feature_columns=FEATURE_COLUMNS, split_by_date=split_by_date)
 
 
 		 #save dataframe
@@ -224,15 +226,15 @@ class MyModel:
 					verbose=1)
 
 
-	#plolt true close price along with predicted close price in blue and red respectfully
+	#plolt true close price (future) along with predicted close (future) price in blue and red respectfully
 	def plot_graph(self, test_df):
 		plt.figure()
 		plt.plot(test_df[f'true_adjclose_{self.LOOKUP_STEP}'], c='b')
 		plt.plot(test_df[f'adjclose_{self.LOOKUP_STEP}'], c='r')
-		plt.xlabel("Days")
-		plt.ylabel("Price")
-		plt.title(self.ticker)
-		plt.legend(["Actual Price", "Predicted Price"])
+		plt.xlabel("Date of Prediction")
+		plt.ylabel("Future Price")
+		plt.title(self.ticker + " {} day predictions".format(self.LOOKUP_STEP))
+		plt.legend(["Actual Future Price", "Predicted Future Price"])
 		#plt.show()
 		plt.savefig("plots/{}_{}days_{}.png".format(self.ticker, self.LOOKUP_STEP, self.date), dpi=300)
 		#plt.close()
@@ -358,7 +360,7 @@ class MyModel:
 
 
 	#Create from scratch and display
-	def __init__(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.4, epochs=100):
+	def __init__(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.3, epochs=100):
 
 
 		if not os.path.isdir("results"):

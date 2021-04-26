@@ -1,19 +1,24 @@
 from model import *
+from math import ceil
 plt.ion()
-def makeModel(ticker):
-	return MyModel(90, ticker, epochs=2, n_steps=50)
+def makeModel(ticker, days=30, n_step=50):
+	return MyModel(days, ticker, epochs=50, n_steps=50) #n_steps=int(ceil(days*(10.0/3.0))))
 
-AMZN = makeModel("AMZN")
-TSLA = makeModel("TSLA")
-NASDAQ = makeModel("^IXIC")
-DJI = makeModel("^DJI")
-AAPL= makeModel("AAPL")
-MSFT = makeModel("MSFT")
-NIO = makeModel("NIO")
-NVDA = makeModel("NVDA")
-FB = makeModel("FB")
-TWTR = makeModel("TWTR")
-WMT= makeModel("WMT")
-SP500 = makeModel("^GSPC")
-GME = makeModel("GME")
+days = [15, 30, 60, 90, 180,365,365*2]
+#days = [365,365*2,365*5,365*10, 365*15]
+for day in days: 
+	#AMZN = makeModel("AMZN",day)
+	#TSLA = makeModel("TSLA",day)
+	NASDAQ = makeModel("^IXIC",day)
+	DJI = makeModel("^DJI",day)
+	#AAPL= makeModel("AAPL",day)
+	#MSFT = makeModel("MSFT",day)
+	#if day < 730:
+		#sNIO = makeModel("NIO",day)
+	#NVDA = makeModel("NVDA",day)
+	#FB = makeModel("FB",day)
+	#TWTR = makeModel("TWTR",day)
+	#WMT= makeModel("WMT",day)
+	SP500 = makeModel("^GSPC",day)
+	#GME = makeModel("GME",day)
 
