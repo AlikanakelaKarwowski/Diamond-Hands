@@ -7,9 +7,8 @@ cursor = conn.cursor()
 
 sqlQuery1 = """ CREATE TABLE IF NOT EXISTS users (
     userID INTEGER PRIMARY KEY AUTOINCREMENT,
-    createdID TEXT NOT NULL UNIQUE,
-    firstName TEXT NOT NULL,
-    lastName TEXT NOT NULL,
+    name TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL
 )"""
