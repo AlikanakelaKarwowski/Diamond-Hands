@@ -54,12 +54,23 @@ def loginAttempt():
         username = request.form['username']
         password = request.form['password']
 
-        #Check if user is in database
         try:
+            #Check if username exists
             if not usernameExists(username):
                 flash('Username does not exist', 'error')
                 msg="Username does not exist"
                 return render_template('result.html', msg = msg)
+            
+            #Check if passwords match
+            if passwordsMatch(username, password):
+                flash('Successfully logged in')
+                msg="Successfully logged in"
+                return render_template('result.html', msg = msg)
+            else:
+                flash('Passwords do not match')
+                msg="Passwords do not match"
+                return render_template('result.html', msg = msg)
+           
         except:
             print("Something went wrong when logging in")
         finally:
@@ -140,7 +151,6 @@ def mypage():
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('mypage.html')
-
 
 @app.route('/plot.png')
 def plot_png():
@@ -231,6 +241,29 @@ def insertUser(name, username, email, password):
     finally:
         print("Successfully inserted user into database")
 
+def passwordsMatch(username, password):
+    try:
+        con = sql.connect("database.db")
+        con.row_factory = sql.Row
+        cur = con.cursor()
+
+        #Select user from database
+        cur.execute('SELECT * FROM users WHERE username=?', (username,))
+        row = cur.fetchone()
+
+        #Check if password matches password in database
+        if row is not None:
+            if username in row:
+                return check_password_hash(row['password'], password)
+            else:
+                print("Unexpected error occured. User not found when checking password")
+        else:
+            print("Unexpected error. User not found when checking password")
+
+    except:
+        print("Something went wrong when authenticating the user")
+    finally:
+        print("End of password match function")
 
 if __name__ == "__main__":
     app.run(debug=True)
