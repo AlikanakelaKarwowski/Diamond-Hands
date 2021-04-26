@@ -57,29 +57,26 @@ def loginAttempt():
         try:
             #Check if username exists
             if not usernameExists(username):
-                flash('Username does not exist', 'error')
                 msg="Username does not exist"
-                return render_template('result.html', msg = msg)
+                return render_template('login.html', msg = msg)
             
             #Check if passwords match
             if passwordsMatch(username, password):
-                flash('Successfully logged in')
                 msg="Successfully logged in"
-                return render_template('result.html', msg = msg)
+                return render_template('login.html', msg = msg)
             else:
-                flash('Passwords do not match')
                 msg="Passwords do not match"
-                return render_template('result.html', msg = msg)
+                return render_template('login.html', msg = msg)
            
         except:
             print("Something went wrong when logging in")
         finally:
             print("Finished logging in")
         msg = "login successful"
-        return render_template("result.html", msg = msg)
+        return render_template("login.html", msg = msg)
     else:
-        msg = "idk"
-        return render_template("result.html", msg = msg)
+        msg = ""
+        return render_template("login.html", msg = msg)
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
@@ -91,8 +88,8 @@ def signup():
 def signupAttempt():
     if request.method == 'POST':
         if not request.form['name'] or not request.form['id'] or not request.form['email'] or not request.form['password'] or not request.form['password2']:
-            flash('All fields are required for signing up', 'error')
-            return render_template('sign-up.html')
+            msg = "Please fill out all forms before signing up"
+            return render_template('sign-up.html', msg = msg)
         
         try:
             name = request.form['name']
@@ -103,30 +100,32 @@ def signupAttempt():
 
             #Check if passwords match
             if password != password2:
-                flash('Passwords do not match', 'error')
-                msg="Passwords do not match"
-                return render_template('sign-up.html')
+                msg = "Passwords do not match"
+                return render_template('sign-up.html', msg = msg)
 
             #Check if username already exists
-            if usernameExists(username):
-                flash('Username already exists', 'error')
-                msg="Username already exists"
-                return render_template('sign-up.html')
+            elif usernameExists(username):
+                msg = "Username already exists"
+                return render_template('sign-up.html', msg = msg)
 
             #Check if email already exists
-            if emailExists(email):
-                flash('Username already exists', 'error')
-                msg="Email already exists"
-                return render_template('sign-up.html')
+            elif emailExists(email):
+                msg = "Email already exists"
+                return render_template('sign-up.html', msg = msg)
             
-            insertUser(name, username, email, password)
-            msg = "Signup successful"
+            #Sign user up
+            elif insertUser(name, username, email, password):
+                msg = "Successfully signed up"
+            
+            #Something unexpected happened
+            else:
+                msg = "Error. Please try again"
         except:
             msg = "Something went wrong"
             con.rollback()
 
         finally:
-            return render_template("result.html", msg = msg)
+            return render_template("sign-up.html", msg = msg)
             con.close()
 
 @app.route("/index2", methods=['POST', 'GET'])
@@ -240,6 +239,7 @@ def insertUser(name, username, email, password):
         print("Something went wrong attempting to insert user into database")
     finally:
         print("Successfully inserted user into database")
+        return True;
 
 def passwordsMatch(username, password):
     try:

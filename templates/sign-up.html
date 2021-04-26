@@ -27,6 +27,9 @@
             </ul>
         </div>
         <form action="{{url_for('signupAttempt')}}" method="post" class="signupForm">
+            {% if msg %}
+        	    <p style="color:red;"> {{msg}} </p>
+        	{% endif %}
             <h2>Sign Up</h2>
             <div class="form">
                 <div class="nameForm">
@@ -45,15 +48,9 @@
                 <input type="password2" class="pw2" name="password2" placeholder="CONFIRM PW" required>
                 </div>
             </div>
-            <input type="submit" value="submit"/>
-            <button type="button" class="btn" onclick="button()">
+            <button type="submit" class="btn" value="submit">
                 SIGN UP
             </button>
-            <script>
-                let button = () => {
-                location.href="/login";
-                }
-            </script>
             <div class="bottomText">
                 Do you have ID? <a href="/login">log in</a>
             </div>
