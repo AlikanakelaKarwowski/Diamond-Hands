@@ -14,17 +14,7 @@
     </head>
     <body>
        <div class="container">
-            <div class="menu">
-                <ul>
-                    <li class="logo"><a href="/index2"><img src="/static/docs/upload/logo.png"></a></li>
-                    <li><a href="/index2"><span class="active">Home</span></a></li>
-                    <li><a href="/stocks"><span class="not-active">Stocks</span></a></li>
-                    <li><a href="/contact"><span class="not-active">Contact</span></li>
-                    <li><a href="/about"><span class="not-active">About</span></li>
-                    <li><a href="/mypage" class="mypage-btn"><span>My Page</span></a></li>
-                    <li><a href="/" class="signout-btn"><span>Sign Out</span></a></li>
-                </ul>
-            </div>
+            {% include 'header.html' %}
             <div class="banner">
                 <div class="app-text">
                     <h1><span style="color: #fd00da">Diamond Hands</span> is an <span style="color: #19d7f8">AI</span> driven <br>long term stock predictor!</h1>
