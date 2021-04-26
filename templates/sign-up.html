@@ -26,25 +26,26 @@
                 <li><a href="/signup" class="signup-btn"><span>Sign Up</span></a></li>
             </ul>
         </div>
-        <form action="/signup" method="post" class="signupForm">
+        <form action="{{url_for('signupAttempt')}}" method="post" class="signupForm">
             <h2>Sign Up</h2>
             <div class="form">
                 <div class="nameForm">
-                <input type="text" class="name" placeholder="FULL NAME" required>
+                <input type="text" class="name" name="name" placeholder="FULL NAME" required>
                 </div>
                 <div class="idForm">
-                <input type="text" class="id" placeholder="ID" required>
+                <input type="text" class="id" name="id" placeholder="ID" required>
                 </div>
                 <div class="emailForm">
-                <input type="text" class="email" placeholder="EMAIL" required>
+                <input type="text" class="email" name="email" placeholder="EMAIL" required>
                 </div>
                 <div class="pwForm">
-                <input type="password" class="pw" placeholder="PW" required>
+                <input type="password" class="pw" name="password" placeholder="PW" required>
                 </div>
                 <div class="pw2Form">
-                <input type="password2" class="pw2" placeholder="CONFIRM PW" required>
+                <input type="password2" class="pw2" name="password2" placeholder="CONFIRM PW" required>
                 </div>
             </div>
+            <input type="submit" value="submit"/>
             <button type="button" class="btn" onclick="button()">
                 SIGN UP
             </button>

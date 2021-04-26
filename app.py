@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+from werkzeug.security import generate_password_hash, check_password_hash
 import io
 import random
 import sqlite3 as sql
@@ -54,12 +55,62 @@ def signup():
         stock_info = request.form['content']
     return render_template('sign-up.html')
 
+@app.route("/signupAttempt", methods=['POST', 'GET'])
+def signupAttempt():
+    if request.method == 'POST':
+        if not request.form['name'] or not request.form['id'] or not request.form['email'] or not request.form['password'] or not request.form['password2']:
+            flash('All fields are required for signing up', 'error')
+            return render_template('sign-up.html')
+        
+        try:
+            name = request.form['name']
+            username = request.form['id']
+            email = request.form['email']
+            password = request.form['password']
+            password2 = request.form['password2']
+
+            if password != password2:
+                flash('Passwords do not match', 'error')
+                return render_template('sign-up.html')
+
+            
+            with sql.connect("database.db") as con:
+                cur = con.cursor()
+
+                #check if email already exists in the database
+                #cur.execute("SELECT * FROM users WHERE email =?", (email),)
+                #emails = cur.fetchall()
+                
+                #insert into table
+                hashedPassword = generate_password_hash(password)
+                cur.execute("INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)", (name, username, email, password))
+                con.commit()
+            
+            msg = "Signup successful"
+        except:
+            msg = "Something went wrong"
+            con.rollback()
+
+        finally:
+            return render_template("result.html", msg = msg)
+            con.close()
 
 @app.route("/index2", methods=['POST', 'GET'])
 def index2():
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('index2.html')
+
+@app.route('/list')
+def list():
+    con = sql.connect("database.db")
+    con.row_factory = sql.Row
+    
+    cur = con.cursor()
+    cur.execute("select * from users")
+    
+    rows = cur.fetchall(); 
+    return render_template("list.html",rows = rows)
 
 
 @app.route("/mypage", methods=['POST', 'GET'])
