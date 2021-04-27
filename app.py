@@ -14,6 +14,12 @@ app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = "seniorseminar2021"
 db = SQLAlchemy(app)
 
+class User:
+    def __init__(username, email, fullname):
+        self.username = username
+        self.email = email
+        self.fullname = fullname
+
 # 157.230.63.172 
 @app.route("/", methods=['POST', 'GET'])
 def index():
@@ -41,12 +47,20 @@ def about():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     return render_template('login.html')
     #if request.method == 'POST':
     #stock_info = request.form['content']
 
 @app.route('/loginAttempt', methods=['POST', 'GET'])
 def loginAttempt():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -61,6 +75,7 @@ def loginAttempt():
         if passwordsMatch(username, password):
             msg="Successfully logged in"
             session['user_status'] = 'logged_in'
+            session['username'] = username
             return render_template('index.html', msg=msg)
         else:
             msg="Passwords do not match"
@@ -71,12 +86,20 @@ def loginAttempt():
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('sign-up.html')
 
 @app.route("/signupAttempt", methods=['POST', 'GET'])
 def signupAttempt():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     if request.method == 'POST':
         if not request.form['name'] or not request.form['id'] or not request.form['email'] or not request.form['password'] or not request.form['password2']:
             msg = "Please fill out all forms before signing up"
@@ -91,14 +114,12 @@ def signupAttempt():
 
             #Check if passwords match
             if password != password2:
-                msg = "Passwords do not match"
-        
+                msg = "Passwords do not match"      
                 return render_template('sign-up.html', msg = msg)
 
             #Check if username already exists
             elif usernameExists(username):
-                msg = "Username already exists"
-        
+                msg = "Username already exists"       
                 return render_template('sign-up.html', msg = msg)
 
             #Check if email already exists
@@ -108,6 +129,8 @@ def signupAttempt():
             
             #Sign user up
             elif insertUser(name, username, email, password):
+                session['user_status'] = 'logged_in'
+                session['username'] = username
                 msg = "Successfully signed up"
             
             #Something unexpected happened
@@ -118,7 +141,7 @@ def signupAttempt():
             con.rollback()
 
         finally:
-            return render_template("sign-up.html", msg = msg)
+            return render_template("index.html", msg = msg)
             con.close()
 
 @app.route("/index2", methods=['POST', 'GET'])
@@ -140,14 +163,266 @@ def list():
 
 @app.route("/mypage", methods=['POST', 'GET'])
 def mypage():
-    if request.method == 'POST':
-        stock_info = request.form['content']
-    return render_template('mypage.html')
+    email = ""
+    username = ""
+    fullname = ""
+
+    con = sql.connect("database.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+
+    #Select user from database
+    cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+    row = cur.fetchone()
+    con.close()
+
+    #Get user email and username
+    if row is not None:
+        email = row['email']
+        username = row['username']
+        name = row['name']
+    else:
+        print("Unexpected error. User not found when checking password")
+
+    return render_template('mypage.html', email = email, username = username, name = name)
 
 @app.route("/signout", methods=['POST', 'GET'])
 def signout():
+    session.pop('username', None)
     session['user_status'] = 'logged_out'
     return render_template('index.html')
+
+@app.route("/updateName", methods=['POST', 'GET'])
+def updateName():
+    return render_template('updateName.html')
+
+@app.route("/updateNameAttempt", methods=['POST', 'GET'])
+def updateNameAttempt():
+    if request.method == 'POST':
+        #Check for any empty forms
+        if not request.form['name'] or not request.form['name2']:
+            msg = "Please fill out all forms before signing up"
+            return render_template('updateName.html', msg = msg)
+
+        try:
+            name = request.form['name']
+            name2 = request.form['name2']
+            
+            #Check if names match
+            if name != name2:
+                msg = "Names do not match"      
+                return render_template('updateName.html', msg = msg)
+
+            updateNm(name)
+
+            #Get updated information from database to pass to mypage.html
+            msg = "Name successfully changed"
+            email = ""
+            username = ""
+            fullname = ""
+
+            con = sql.connect("database.db")
+            con.row_factory = sql.Row
+            cur = con.cursor()
+
+            #Select user from database
+            cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+            row = cur.fetchone()
+            con.close()
+
+            #Get user email and username
+            if row is not None:
+                email = row['email']
+                username = row['username']
+                name = row['name']
+            else:
+                print("Unexpected error. User not found when checking password")
+
+            return render_template('mypage.html', email = email, username = username, name = name)
+        except:
+            msg = "Something went wrong"
+            con.rollback()
+
+        finally:
+            return render_template("mypage.html", email = email, username = username, name = name)
+            con.close()
+
+@app.route("/updateEmail", methods=['POST', 'GET'])
+def updateEmail():
+    return render_template('updateEmail.html')
+
+@app.route("/updateEmailAttempt", methods=['POST', 'GET'])
+def updateEmailAttempt():
+    if request.method == 'POST':
+        #Check for any empty forms
+        if not request.form['email'] or not request.form['email2']:
+            msg = "Please fill out all forms before signing up"
+            return render_template('updateEmail.html', msg = msg)
+
+        try:
+            email = request.form['email']
+            email2 = request.form['email2']
+            
+            #Check if emails match
+            if email != email2:
+                msg = "Emails do not match"      
+                return render_template('updateEmail.html', msg = msg)
+            
+            updateEml(email)
+
+            #Get updated information from database to pass to mypage.html
+            msg = "Email successfully changed"
+            email = ""
+            username = ""
+            fullname = ""
+
+            con = sql.connect("database.db")
+            con.row_factory = sql.Row
+            cur = con.cursor()
+
+            #Select user from database
+            cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+            row = cur.fetchone()
+            con.close()
+
+            #Get user email and username
+            if row is not None:
+                email = row['email']
+                username = row['username']
+                name = row['name']
+            else:
+                print("Unexpected error. User not found when checking password")
+
+            return render_template('mypage.html', email = email, username = username, name = name)
+        except:
+            msg = "Something went wrong"
+            con.rollback()
+
+        finally:
+            return render_template("mypage.html", email = email, username = username, name = name)
+            con.close()
+
+@app.route("/updatePassword", methods=['POST', 'GET'])
+def updatePassword():
+    return render_template('updatePassword.html')
+
+@app.route("/updatePasswordAttempt", methods=['POST', 'GET'])
+def updatePasswordAttempt():
+    if request.method == 'POST':
+        #Check for any empty forms
+        if not request.form['currentPassword'] or not request.form['newPassword']or not request.form['newPassword2']:
+            msg = "Please fill out all forms before signing up"
+            return render_template('updatePassword.html', msg = msg)
+        
+        #Check if passwords match
+        password = request.form['newPassword']
+        password2 = request.form['newPassword2']
+        if password != password2:
+            msg = "New passwords do not match"
+            return render_template('updatePassword.html', msg = msg)
+
+        #Check if passwords match
+        username = session['username']
+        currentPassword = request.form['currentPassword']
+        if passwordsMatch(username, currentPassword):
+            try:                
+                updatePwd(password)
+
+                #Get updated information from database to pass to mypage.html
+                msg = "Password successfully changed"
+                email = ""
+                username = ""
+                fullname = ""
+
+                con = sql.connect("database.db")
+                con.row_factory = sql.Row
+                cur = con.cursor()
+
+                #Select user from database
+                cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+                row = cur.fetchone()
+                con.close()
+
+                #Get user email and username
+                if row is not None:
+                    email = row['email']
+                    username = row['username']
+                    name = row['name']
+                else:
+                    print("Unexpected error. User not found when checking password")
+
+                return render_template('mypage.html', email = email, username = username, name = name)
+            except:
+                msg = "Something went wrong"
+                con.rollback()
+
+            finally:
+                return render_template("mypage.html", email = email, username = username, name = name)
+                con.close()
+        else:
+            msg = "Current password is incorrect. Please try again."
+            return render_template('updatePassword.html', msg = msg)
+
+@app.route("/updateUsername", methods=['POST', 'GET'])
+def updateUsername():
+    return render_template('updateUsername.html')
+
+@app.route("/updateUsernameAttempt", methods=['POST', 'GET'])
+def updateUsernameAttempt():
+    if request.method == 'POST':
+        #Check for any empty forms
+        if not request.form['currentPassword'] or not request.form['newUsername']or not request.form['newUsername2']:
+            msg = "Please fill out all forms before changing your ID"
+            return render_template('updateUsername.html', msg = msg)
+        
+        #Check if usernames match
+        username = request.form['newUsername']
+        username2 = request.form['newUsername2']
+        if username != username2:
+            msg = "New IDs do not match"
+            return render_template('updateUsername.html', msg = msg)
+
+        #Check if passwords match
+        ID = session['username']
+        currentPassword = request.form['currentPassword']
+        if passwordsMatch(ID, currentPassword):
+            try:                
+                updateID(username)
+
+                #Get updated information from database to pass to mypage.html
+                msg = "ID successfully changed"
+                email = ""
+                username = ""
+                fullname = ""
+
+                con = sql.connect("database.db")
+                con.row_factory = sql.Row
+                cur = con.cursor()
+
+                #Select user from database
+                cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+                row = cur.fetchone()
+                con.close()
+
+                #Get user email and username
+                if row is not None:
+                    email = row['email']
+                    username = row['username']
+                    name = row['name']
+                else:
+                    print("Unexpected error. User not found when checking ID")
+
+                return render_template('mypage.html', email = email, username = username, name = name)
+            except:
+                msg = "Something went wrong"
+                con.rollback()
+
+            finally:
+                return render_template("mypage.html", email = email, username = username, name = name)
+                con.close()
+        else:
+            msg = "Current password is incorrect. Please try again."
+            return render_template('updatePassword.html', msg = msg)
 
 @app.route('/plot.png')
 def plot_png():
@@ -261,7 +536,65 @@ def passwordsMatch(username, password):
     except:
         print("Something went wrong when authenticating the user")
     finally:
+        con.close
         print("End of password match function")
+
+def updateNm(name):
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+            cur.execute('UPDATE users set name =? WHERE username=?', (name,session['username']))
+            con.commit()
+    except:
+        print("Something went wrong attempting to change user's name in database")
+    finally:
+        print("Successfully changed user's name in database")
+        return True;
+
+def updateEml(email):
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+            cur.execute('UPDATE users set email =? WHERE username=?', (email,session['username']))
+            con.commit()
+    except:
+        print("Something went wrong attempting to change user's name in database")
+    finally:
+        print("Successfully changed user's email in database")
+        return True;
+
+def updatePwd(password):
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+
+            #hash password using sha256
+            hashedPassword = generate_password_hash(password, method='sha256')
+
+            cur.execute('UPDATE users set password =? WHERE username=?', (hashedPassword,session['username']))
+            con.commit()
+    except:
+        print("Something went wrong attempting to change user's password in database")
+    finally:
+        print("Successfully changed user's password in database")
+        return True;
+
+def updateID(username):
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+
+            cur.execute('UPDATE users set username =? WHERE username=?', (username,session['username']))
+            con.commit()
+
+        session.pop('username', None)
+        session['username'] = username
+            
+    except:
+        print("Something went wrong attempting to change user's password in database")
+    finally:
+        print("Successfully changed user's password in database")
+        return True;
 
 if __name__ == "__main__":
     app.run(debug=True)
