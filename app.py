@@ -61,6 +61,7 @@ def loginAttempt():
         if passwordsMatch(username, password):
             msg="Successfully logged in"
             session['user_status'] = 'logged_in'
+            session['username'] = username
             return render_template('index.html', msg=msg)
         else:
             msg="Passwords do not match"
@@ -91,14 +92,12 @@ def signupAttempt():
 
             #Check if passwords match
             if password != password2:
-                msg = "Passwords do not match"
-        
+                msg = "Passwords do not match"      
                 return render_template('sign-up.html', msg = msg)
 
             #Check if username already exists
             elif usernameExists(username):
-                msg = "Username already exists"
-        
+                msg = "Username already exists"       
                 return render_template('sign-up.html', msg = msg)
 
             #Check if email already exists
@@ -108,6 +107,8 @@ def signupAttempt():
             
             #Sign user up
             elif insertUser(name, username, email, password):
+                session['user_status'] = 'logged_in'
+                session['username'] = username
                 msg = "Successfully signed up"
             
             #Something unexpected happened
@@ -142,10 +143,13 @@ def list():
 def mypage():
     if request.method == 'POST':
         stock_info = request.form['content']
+
+    
     return render_template('mypage.html')
 
 @app.route("/signout", methods=['POST', 'GET'])
 def signout():
+    session.pop('username', None)
     session['user_status'] = 'logged_out'
     return render_template('index.html')
 
