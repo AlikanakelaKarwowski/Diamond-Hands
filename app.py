@@ -47,12 +47,20 @@ def about():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     return render_template('login.html')
     #if request.method == 'POST':
     #stock_info = request.form['content']
 
 @app.route('/loginAttempt', methods=['POST', 'GET'])
 def loginAttempt():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -78,12 +86,20 @@ def loginAttempt():
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('sign-up.html')
 
 @app.route("/signupAttempt", methods=['POST', 'GET'])
 def signupAttempt():
+    #Redirect user if already logged in
+    if session['user_status'] == 'logged_in':
+        return render_template('index.html')
+
     if request.method == 'POST':
         if not request.form['name'] or not request.form['id'] or not request.form['email'] or not request.form['password'] or not request.form['password2']:
             msg = "Please fill out all forms before signing up"
