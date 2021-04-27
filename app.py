@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, Response, flash
+from flask import Flask, render_template, url_for, request, redirect, Response, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -11,7 +11,7 @@ import database
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = "random string"
+app.config['SECRET_KEY'] = "seniorseminar2021"
 db = SQLAlchemy(app)
 
 # 157.230.63.172 
@@ -20,7 +20,6 @@ def index():
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('index.html')
-
 
 @app.route("/stocks", methods=['POST', 'GET'])
 def stocks():
@@ -41,7 +40,6 @@ def about():
         stock_info = request.form['content']
     return render_template('about.html')
 
-
 @app.route("/login", methods=['POST', 'GET'])
 def login():
     return render_template('login.html')
@@ -54,26 +52,20 @@ def loginAttempt():
         username = request.form['username']
         password = request.form['password']
 
-        try:
-            #Check if username exists
-            if not usernameExists(username):
-                msg="Username does not exist"
-                return render_template('login.html', msg = msg)
-            
-            #Check if passwords match
-            if passwordsMatch(username, password):
-                msg="Successfully logged in"
-                return render_template('login.html', msg = msg)
-            else:
-                msg="Passwords do not match"
-                return render_template('login.html', msg = msg)
-           
-        except:
-            print("Something went wrong when logging in")
-        finally:
-            print("Finished logging in")
-        msg = "login successful"
-        return render_template("login.html", msg = msg)
+        #Check if username exists
+        if not usernameExists(username):
+            msg="Username does not exist"
+    
+            return render_template('login.html', msg = msg)
+        
+        #Check if passwords match
+        if passwordsMatch(username, password):
+            msg="Successfully logged in"
+            session['user_status'] = 'logged_in'
+            return render_template('index.html', msg=msg)
+        else:
+            msg="Passwords do not match"
+            return render_template('login.html', msg = msg)
     else:
         msg = ""
         return render_template("login.html", msg = msg)
@@ -101,11 +93,13 @@ def signupAttempt():
             #Check if passwords match
             if password != password2:
                 msg = "Passwords do not match"
+        
                 return render_template('sign-up.html', msg = msg)
 
             #Check if username already exists
             elif usernameExists(username):
                 msg = "Username already exists"
+        
                 return render_template('sign-up.html', msg = msg)
 
             #Check if email already exists
@@ -150,6 +144,11 @@ def mypage():
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('mypage.html')
+
+@app.route("/signout", methods=['POST', 'GET'])
+def signout():
+    session['user_status'] = 'logged_out'
+    return render_template('index.html')
 
 @app.route('/plot.png')
 def plot_png():
