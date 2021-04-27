@@ -277,6 +277,7 @@ class MyModel:
 		#add true to dataprice
 		test_df[f"true_adjclose_{self.LOOKUP_STEP}"] = y_test
 
+		self.current = final_dataframe["adjclose"]
 
 		#sort the df by date
 		test_df.sort_index(inplace=True)
