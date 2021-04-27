@@ -286,6 +286,67 @@ def updateEmailAttempt():
             return render_template("mypage.html", email = email, username = username, name = name)
             con.close()
 
+@app.route("/updatePassword", methods=['POST', 'GET'])
+def updatePassword():
+    return render_template('updatePassword.html')
+
+@app.route("/updatePasswordAttempt", methods=['POST', 'GET'])
+def updatePasswordAttempt():
+    if request.method == 'POST':
+        #Check for any empty forms
+        if not request.form['currentPassword'] or not request.form['newPassword']or not request.form['newPassword2']:
+            msg = "Please fill out all forms before signing up"
+            return render_template('updatePassword.html', msg = msg)
+        
+        #Check if passwords match
+        password = request.form['newPassword']
+        password2 = request.form['newPassword2']
+        if password != password2:
+            msg = "New passwords do not match"
+            return render_template('updatePassword.html', msg = msg)
+
+        #Check if passwords match
+        username = session['username']
+        currentPassword = request.form['currentPassword']
+        if passwordsMatch(username, currentPassword):
+            try:                
+                updatePwd(password)
+
+                #Get updated information from database to pass to mypage.html
+                msg = "Password successfully changed"
+                email = ""
+                username = ""
+                fullname = ""
+
+                con = sql.connect("database.db")
+                con.row_factory = sql.Row
+                cur = con.cursor()
+
+                #Select user from database
+                cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+                row = cur.fetchone()
+                con.close()
+
+                #Get user email and username
+                if row is not None:
+                    email = row['email']
+                    username = row['username']
+                    name = row['name']
+                else:
+                    print("Unexpected error. User not found when checking password")
+
+                return render_template('mypage.html', email = email, username = username, name = name)
+            except:
+                msg = "Something went wrong"
+                con.rollback()
+
+            finally:
+                return render_template("mypage.html", email = email, username = username, name = name)
+                con.close()
+        else:
+            msg = "Current password is incorrect. Please try again."
+            return render_template('updatePassword.html', msg = msg)
+
 @app.route('/plot.png')
 def plot_png():
     getvar = "postwas"
@@ -423,6 +484,22 @@ def updateEml(email):
         print("Something went wrong attempting to change user's name in database")
     finally:
         print("Successfully changed user's email in database")
+        return True;
+
+def updatePwd(password):
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+
+            #hash password using sha256
+            hashedPassword = generate_password_hash(password, method='sha256')
+
+            cur.execute('UPDATE users set password =? WHERE username=?', (hashedPassword,session['username']))
+            con.commit()
+    except:
+        print("Something went wrong attempting to change user's password in database")
+    finally:
+        print("Successfully changed user's password in database")
         return True;
 
 if __name__ == "__main__":
