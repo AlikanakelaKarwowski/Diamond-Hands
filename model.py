@@ -240,7 +240,7 @@ class MyModel:
 		plt.title(self.ticker + " {} day predictions".format(self.LOOKUP_STEP))
 		plt.legend(["Actual Future Price", "Predicted Future Price"])
 		#plt.show()
-		plt.savefig("plots/{}_{}days_{}.png".format(self.ticker, self.LOOKUP_STEP, self.date), dpi=300)
+		plt.savefig("static/docs/upload/plots/{}_{}days_{}.png".format(self.ticker, self.LOOKUP_STEP, self.date), dpi=300)
 		#plt.close()
 		return plt
 
@@ -373,8 +373,8 @@ class MyModel:
 			os.mkdir("logs")
 		if not os.path.isdir("data"):
 			os.mkdir("data")
-		if not os.path.isdir("plots"):
-			os.mkdir("plots")
+		if not os.path.isdir("static/docs/upload/plots"):
+			os.mkdir("static/docs/upload/plots")
 
 
 		self.define_model(lookup_step, stock, n_steps=n_steps, test_size=test_size, n_layers=n_layers, units=units, dropout=dropout, epochs=epochs)
@@ -440,8 +440,8 @@ class MyModel:
 			os.mkdir("logs")
 		if not os.path.isdir("data"):
 			os.mkdir("data")
-		if not os.path.isdir("plots"):
-			os.mkdir("plots")
+		if not os.path.isdir("static/docs/upload/plots"):
+			os.mkdir("static/docs/upload/plots")
 
 		print(len(FEATURE_COLUMNS))
 		#build needed variables
@@ -479,7 +479,7 @@ class MyModel:
 		print("Total profit:", self.total_profit)
 		print("Profit per trade:", self.profit_per_trade)
 
-		self.plot.show()		
+		#self.plot.show()		
 
 
 

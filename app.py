@@ -8,6 +8,7 @@ import io
 import random
 import sqlite3 as sql
 import database
+from model import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///database.db'
@@ -28,11 +29,71 @@ def index():
         stock_info = request.form['content']
     return render_template('index.html')
 
+
+from datetime import date, datetime
+import pytz
 @app.route("/stocks", methods=['POST', 'GET'])
 def stocks():
+    imagePath = ""
     if request.method == 'POST':
-        stock_info = request.form['content']
-    return render_template('stocks.html')
+        #stock_info = request.form['content']
+        #stockName, timeselect
+        
+        timeSelect = request.form['TimeSelector']
+        stockTicker = request.form['StockSelector']
+
+        if stockTicker == "NDAQ":
+            stockTicker = "^IXIC"
+        if stockTicker == "INX":
+            stockTicker = "^INX"
+        if stockTicker == "DJI":
+            stockTicker = "^DJI"
+
+        if timeSelect == "15 Day":
+            timeSelect = int(15)
+        if timeSelect == "1 Month":
+            timeSelect = 30
+        if timeSelect == "2 Months":
+            timeSelect = 60
+        if timeSelect == "3 Months":
+            timeSelect = 90
+        if timeSelect == "6 Months":
+            timeSelect = 180
+        if timeSelect == "1 Year":
+            timeSelect = 365
+        if timeSelect == "2 Years":
+            timeSelect = 362*2
+        print(timeSelect)
+        print(stockTicker)
+        #SQL Call
+        try:
+            with sql.connect("database.db") as con:
+                cur = con.cursor()
+
+                query = "SELECT modelName FROM models WHERE stock = \"{}\" AND lookup_step = {} ORDER BY updateDate DESC;".format(stockTicker, timeSelect)
+               # values = (stockTicker, timeSelect)
+                print(query)
+                cur.execute(query)
+                print("hi2")
+                myResult = cur.fetchone()
+                
+                myModelName = myResult[0]
+                #myDate = myResult[1]
+                print(myResult)
+                tz = pytz.timezone("US/Eastern")
+                date_now = datetime.now(tz).date()
+                myStock = MyModel.fromModel(myModelName)
+
+                
+
+                imagePath = "static/docs/upload/plots/{}_{}days_{}.png".format(stockTicker, timeSelect, date_now)
+
+        except Exception as e:
+            print(e)
+
+    print(imagePath)
+    print("hi")
+    return render_template('stocks.html', imagePath = imagePath)
 
 @app.route("/contact", methods=['POST', 'GET'])
 def contact():

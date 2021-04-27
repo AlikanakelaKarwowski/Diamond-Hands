@@ -20,10 +20,10 @@
         <div class="stock-options-border">
             <h1 class="stock-option-title">Stock Modifier</h1>
             <div class="stock-options">
-                <form class="stock-options-time" action="">
+                <form class="stock-options-time" action="{{url_for('stocks')}}" method="POST">
                     <span class="TimeSelectorLable">
                         <label for="TimeSelector">Select Time</label>
-                        <select name="TimeSelector" class="TimeSelector">
+                        <select name="TimeSelector" class="TimeSelector" id="TimeSelector">
                             <option value="15 Day"> 15 Day </option>
                             <option value="1 Month"> 1 Month </option>
                             <option value="2 Months"> 2 Months </option>
@@ -36,7 +36,7 @@
 
                     <span class="StockSelectorLable">
                         <label for="StockSelector" class="StockSelector">Select Stocks</label>
-                        <select name="StockSelector" class="StockSelector">
+                        <select name="StockSelector" class="StockSelector" id="StockSelector">
                             <option value="AMZN"> AMZN </option>
                             <option value="TSLA"> TSLA </option>
                             <option value="NDAQ"> NDAQ </option>
@@ -55,9 +55,11 @@
                 </form>
             </div>
         </div>
+        {%if imagePath%}
         <div class="stock-graph">
-            <img src="/static/docs/upload/TempGraph.png" class="graph-pic">
+            <img src="{{imagePath}}" class="graph-pic">
         </div>
+        {%endif%}
     </div>
 </body>
 
