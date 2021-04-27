@@ -24,7 +24,9 @@ class User:
 # 157.230.63.172 
 @app.route("/", methods=['POST', 'GET'])
 def index():
-    session['user_status'] = 'logged_out'
+    #Set session to logged_out for the first time visiting the page
+    if session.get('user_status') is None:
+	    session['user_status'] = 'logged_out'
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('index.html')
