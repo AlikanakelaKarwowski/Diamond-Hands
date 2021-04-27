@@ -312,7 +312,7 @@ class MyModel:
 		pred = self.model.predict(last_sequence)
 
 		pred_price = self.data["column_scaler"]["adjclose"].inverse_transform(pred)[0][0]
-
+		self.prediction = pred_price
 		return pred_price
 
 
@@ -336,7 +336,7 @@ class MyModel:
 
 		#predict future price
 		future_price = self.predict()
-
+		#self.prediction= future_price
 
 
 		#calculate accuracy by counting number of positive profits
@@ -362,7 +362,8 @@ class MyModel:
 
 		self.plot = self.plot_graph(final_df)
 
-
+	def getFuturePrice(self):
+		return self.future_price
 	#Create from scratch and display
 	def __init__(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.3, epochs=50):
 
@@ -378,7 +379,7 @@ class MyModel:
 
 
 		self.define_model(lookup_step, stock, n_steps=n_steps, test_size=test_size, n_layers=n_layers, units=units, dropout=dropout, epochs=epochs)
-
+		self.future_price = 0
 		self.load_model()
 
 		self.evaluate_model()
@@ -479,6 +480,7 @@ class MyModel:
 		print("Total profit:", self.total_profit)
 		print("Profit per trade:", self.profit_per_trade)
 
+		return self
 		#self.plot.show()		
 
 

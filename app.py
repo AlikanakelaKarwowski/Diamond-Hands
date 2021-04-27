@@ -35,6 +35,7 @@ import pytz
 @app.route("/stocks", methods=['POST', 'GET'])
 def stocks():
     imagePath = ""
+    output=""
     if request.method == 'POST':
         #stock_info = request.form['content']
         #stockName, timeselect
@@ -87,13 +88,15 @@ def stocks():
                 
 
                 imagePath = "static/docs/upload/plots/{}_{}days_{}.png".format(stockTicker, timeSelect, date_now)
+                output = myStock.getFuturePrice()
+                print("output = {}".format(output))
 
         except Exception as e:
             print(e)
 
     print(imagePath)
     print("hi")
-    return render_template('stocks.html', imagePath = imagePath)
+    return render_template('stocks.html', imagePath = imagePath, output=output)
 
 @app.route("/contact", methods=['POST', 'GET'])
 def contact():
