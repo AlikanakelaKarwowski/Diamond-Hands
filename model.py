@@ -392,6 +392,69 @@ class MyModel:
 		self.plot.show()
 
 	#Have saved model
-	#def __init__(self, path):
-		#self.load_model(path=path)
-		#sel.evaluate_model()
+	def __init__( self, model_name, loss = "huber_loss", n_steps = 50, feature_columns = ["adjclose", "volume", "open", "high", "low"], units = 256, dropout = 0.4, epochs=50):
+
+		#get model name format
+		splitModelName = model_name.split("_")
+		print(splitModelName)
+		date_file = splitModelName[0] 
+		stock = splitModelName[1]
+		s_lookup_step = splitModelName[2].split("d")[0]
+		lookup_step = int(s_lookup_step)
+		self.LOSS = loss
+		self.model_name = model_name
+
+		#print(date)
+		print(stock)
+		print(lookup_step)
+
+		#these should exist but jsut in case
+		if not os.path.isdir("results"):
+			os.mkdir("results")
+		if not os.path.isdir("logs"):
+			os.mkdir("logs")
+		if not os.path.isdir("data"):
+			os.mkdir("data")
+		if not os.path.isdir("plots"):
+			os.mkdir("plots")
+
+
+		#build needed variables
+		self.N_STEPS = n_steps 
+		self.LOOKUP_STEP = lookup_step
+		self.ticker = stock
+		self.date = datetime.strptime(date_file, "%Y-%m-%d").date()
+		self.model = self.create_model(self.N_STEPS, len(feature_columns), loss = loss, units = units)
+
+		#load model from save
+		self.load_model(path=os.path.join("results", self.model_name + ".h5"))
+
+		#update date for new data and updated info
+		tz = pytz.timezone("US/Eastern")
+		self.date = datetime.now(tz).date()
+
+		#load data
+		split_by_date = True
+		if self.LOOKUP_STEP > 179:
+		 	split_by_date = False
+
+		self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step=self.LOOKUP_STEP, split_by_date=split_by_date)
+
+
+
+		self.evaluate_model()
+
+		print(f"Ticker: {self.ticker}")
+		print(f"Future price after {self.LOOKUP_STEP} days is {self.future_price:.2f}$")
+		print(f"{self.LOSS} loss:", self.loss)
+		print("Mean Absolute Error:", self.mean_absolute_error)
+		print("Accuracy score:", self.accuracy_score)
+		print("Total buy profit:", self.total_buy_profit)
+		print("Total sell profit:", self.total_sell_profit)
+		print("Total profit:", self.total_profit)
+		print("Profit per trade:", self.profit_per_trade)
+
+		self.plot.show()		
+
+
+
