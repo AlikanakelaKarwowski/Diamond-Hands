@@ -16,33 +16,24 @@
 <body>
     <div class="container">
         {% include 'header.html' %}
-        <form action="{{url_for('signupAttempt')}}" method="post" class="signupForm">
+        <form action="{{url_for('updateNameAttempt')}}" method="post" class="signupForm">
             {% if msg %}
         	    <p style="color:red;"> {{msg}} </p>
         	{% endif %}
-            <h2>Sign Up</h2>
+            <h2>Update name</h2>
             <div class="form">
                 <div class="nameForm">
-                <input type="text" class="name" name="name" placeholder="FULL NAME" required>
+                <input type="text" class="name" name="name" placeholder="NEW NAME" required>
                 </div>
-                <div class="idForm">
-                <input type="text" class="id" name="id" placeholder="ID" required>
-                </div>
-                <div class="emailForm">
-                <input type="text" class="email" name="email" placeholder="EMAIL" required>
-                </div>
-                <div class="pwForm">
-                <input type="password" class="pw" name="password" placeholder="PW" required>
-                </div>
-                <div class="pw2Form">
-                <input type="password2" class="pw2" name="password2" placeholder="CONFIRM PW" required>
+                <div class="nameForm">
+                <input type="text" class="name" name="name2" placeholder="CONFIRM NAME" required>
                 </div>
             </div>
             <button type="submit" class="btn" value="submit">
-                SIGN UP
+                Submit changes
             </button>
             <div class="bottomText">
-                Do you have ID? <a href="/login">log in</a>
+                Don't want to make a change? <a href="/mypage">Go Back</a>
             </div>
         </form>        
     </div>

@@ -158,19 +158,16 @@ def mypage():
     #Select user from database
     cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
     row = cur.fetchone()
+    con.close()
 
     #Get user email and username
     if row is not None:
-        print("row is not none")
         email = row['email']
         username = row['username']
         name = row['name']
     else:
         print("Unexpected error. User not found when checking password")
 
-    print(email)
-    print(username)
-    print(fullname)
     return render_template('mypage.html', email = email, username = username, name = name)
 
 @app.route("/signout", methods=['POST', 'GET'])
@@ -178,6 +175,61 @@ def signout():
     session.pop('username', None)
     session['user_status'] = 'logged_out'
     return render_template('index.html')
+
+@app.route("/updateName", methods=['POST', 'GET'])
+def updateName():
+    return render_template('updateName.html')
+
+@app.route("/updateNameAttempt", methods=['POST', 'GET'])
+def updateNameAttempt():
+    if request.method == 'POST':
+        #Check for any empty forms
+        if not request.form['name'] or not request.form['name2']:
+            msg = "Please fill out all forms before signing up"
+            return render_template('updateName.html', msg = msg)
+
+        try:
+            name = request.form['name']
+            name2 = request.form['name2']
+            
+            #Check if names match
+            if name != name2:
+                msg = "Names do not match"      
+                return render_template('updateName.html', msg = msg)
+
+            updateNm(name)
+
+            #Get updated information from database to pass to mypage.html
+            msg = "Name successfully changed"
+            email = ""
+            username = ""
+            fullname = ""
+
+            con = sql.connect("database.db")
+            con.row_factory = sql.Row
+            cur = con.cursor()
+
+            #Select user from database
+            cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+            row = cur.fetchone()
+            con.close()
+
+            #Get user email and username
+            if row is not None:
+                email = row['email']
+                username = row['username']
+                name = row['name']
+            else:
+                print("Unexpected error. User not found when checking password")
+
+            return render_template('mypage.html', email = email, username = username, name = name)
+        except:
+            msg = "Something went wrong"
+            con.rollback()
+
+        finally:
+            return render_template("mypage.html", email = email, username = username, name = name)
+            con.close()
 
 @app.route('/plot.png')
 def plot_png():
@@ -291,7 +343,20 @@ def passwordsMatch(username, password):
     except:
         print("Something went wrong when authenticating the user")
     finally:
+        con.close
         print("End of password match function")
+
+def updateNm(name):
+    try:
+        with sql.connect("database.db") as con:
+            cur = con.cursor()
+            cur.execute('UPDATE users set name =? WHERE username=?', (name,session['username']))
+            con.commit()
+    except:
+        print("Something went wrong attempting to change user's name in database")
+    finally:
+        print("Successfully changed user's name in database")
+        return True;
 
 if __name__ == "__main__":
     app.run(debug=True)
