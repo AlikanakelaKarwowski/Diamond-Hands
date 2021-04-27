@@ -21,38 +21,42 @@
             <h1 class="stock-option-title">Stock Modifier</h1>
             <div class="stock-options">
                 <form class="stock-options-time" action="">
-                    
-                    <label for="TimeSelector" class="TimeSelector">Select Time</label>
-                    <select name="TimeSelector" class="TimeSelector">
-                        <option value="1 Year"> 1 Year </option>
-                        <option value="3 Years"> 3 Years </option>
-                        <option value="5 Years"> 5 Years </option>
-                        <option value="10 Years"> 10 Years </option>
-                        <option value="15 Years"> 15 Years </option>
-                        <option value="20 Years"> 20 Years </option>
-                    </select>
-
-                    <label for="StockSelector" class="StockSelector">Select Stocks</label>
-                    <select name="StockSelector" class="StockSelector">
-                        <option value="AMZN"> AMZN </option>
-                        <option value="TSLA"> TSLA </option>
-                        <option value="NDAQ"> NDAQ </option>
-                        <option value="DJI"> DJI </option>
-                        <option value="AAPL"> AAPL </option>
-                        <option value="MSFT"> MSFT </option>
-                        <option value="NIO"> NIO </option>
-                        <option value="NVDA"> NVDA </option>
-                        <option value="FB"> FB </option>
-                        <option value="TWTR"> TWTR </option>
-                        <option value="WMT"> WMT </option>
-                        <option value="INX"> INX </option>
-                    </select>
+                    <span class="TimeSelectorLable">
+                        <label for="TimeSelector">Select Time</label>
+                        <select name="TimeSelector" class="TimeSelector">
+                            <option value="15 Day"> 15 Day </option>
+                            <option value="1 Month"> 1 Month </option>
+                            <option value="2 Months"> 2 Months </option>
+                            <option value="3 Months"> 3 Months </option>
+                            <option value="6 Months"> 6 Months </option>
+                            <option value="1 Year"> 1 Year </option>
+                            <option value="2 Years"> 2 Years </option>
+                        </select>
+                    </span>
+                
+                    <span class="StockSelectorLable">
+                        <label for="StockSelector" class="StockSelector">Select Stocks</label>
+                        <select name="StockSelector" class="StockSelector">
+                            <option value="AMZN"> AMZN </option>
+                            <option value="TSLA"> TSLA </option>
+                            <option value="NDAQ"> NDAQ </option>
+                            <option value="DJI"> DJI </option>
+                            <option value="AAPL"> AAPL </option>
+                            <option value="MSFT"> MSFT </option>
+                            <option value="NIO"> NIO </option>
+                            <option value="NVDA"> NVDA </option>
+                            <option value="FB"> FB </option>
+                            <option value="TWTR"> TWTR </option>
+                            <option value="WMT"> WMT </option>
+                            <option value="INX"> INX </option>
+                        </select>
+                    </span>
                     <input type="submit" value="Predict!" class="sub-btn">
                 </form>
             </div>
         </div>
         <div class="stock-graph">
-
+            <img src="/static/docs/upload/TempGraph.png" class="graph-pic">
         </div>
     </div>
 </body>
