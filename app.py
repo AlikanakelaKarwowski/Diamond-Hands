@@ -14,6 +14,12 @@ app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = "seniorseminar2021"
 db = SQLAlchemy(app)
 
+class User:
+    def __init__(username, email, fullname):
+        self.username = username
+        self.email = email
+        self.fullname = fullname
+
 # 157.230.63.172 
 @app.route("/", methods=['POST', 'GET'])
 def index():
@@ -141,11 +147,31 @@ def list():
 
 @app.route("/mypage", methods=['POST', 'GET'])
 def mypage():
-    if request.method == 'POST':
-        stock_info = request.form['content']
+    email = ""
+    username = ""
+    fullname = ""
 
-    
-    return render_template('mypage.html')
+    con = sql.connect("database.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+
+    #Select user from database
+    cur.execute('SELECT * FROM users WHERE username=?', (session['username'],))
+    row = cur.fetchone()
+
+    #Get user email and username
+    if row is not None:
+        print("row is not none")
+        email = row['email']
+        username = row['username']
+        name = row['name']
+    else:
+        print("Unexpected error. User not found when checking password")
+
+    print(email)
+    print(username)
+    print(fullname)
+    return render_template('mypage.html', email = email, username = username, name = name)
 
 @app.route("/signout", methods=['POST', 'GET'])
 def signout():

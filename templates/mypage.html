@@ -17,7 +17,17 @@
     <div class="container">
     {% include 'header.html' %}
         <form action="/mypage" method="post" class="mypageForm">
-            <h2>My Page</h2>        
+            <h2>My Page</h2>
+            <div>
+                {% if session['user_status'] == 'logged_in' %}
+                <div class="app-text">
+                    <h1><span style="color: #fd00da">Name: </span> <span style="color: #19d7f8">{{name}}</span> <br>
+                        <span style="color: #fd00da">Username: </span> <span style="color: #19d7f8">{{username}}</span> <br>
+                        <span style="color: #fd00da">Email: </span> <span style="color: #19d7f8">{{email}}</span> <br>
+                    </h1>
+                </div>
+        	    {% endif %}
+            </div>        
         </form>        
     </div>
 </body>
