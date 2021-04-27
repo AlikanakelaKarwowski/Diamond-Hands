@@ -10,7 +10,8 @@
                         <li><a href="/signup" class="signup-btn"><span>Sign Up</span></a></li>
                     {%endif%}
                     {%if session['user_status'] == 'logged_in'%}
-                            <li><a href="/signout" class="signup-btn"><span>Sign out</span></a></li>
+                        <li><a href="/mypage"><span class="not-active">My Page</span></a></li>
+                        <li><a href="/signout" class="signup-btn"><span>Sign out</span></a></li>
                     {%endif%}
                 </ul>
             </div>

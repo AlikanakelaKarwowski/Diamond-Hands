@@ -27,7 +27,6 @@ def stocks():
         stock_info = request.form['content']
     return render_template('stocks.html')
 
-
 @app.route("/contact", methods=['POST', 'GET'])
 def contact():
     if request.method == 'POST':
