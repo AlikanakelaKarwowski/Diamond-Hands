@@ -141,7 +141,7 @@ def signupAttempt():
             con.rollback()
 
         finally:
-            return render_template("sign-up.html", msg = msg)
+            return render_template("index.html", msg = msg)
             con.close()
 
 @app.route("/index2", methods=['POST', 'GET'])
