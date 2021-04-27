@@ -18,6 +18,10 @@ from datetime import date, datetime
 from tensorflow.keras.layers import LSTM
 import matplotlib.pyplot as plt
 
+import sqlite3 as sql
+import database
+
+
 np.random.seed(314)
 tf.random.set_seed(314)
 random.seed(314)
@@ -148,7 +152,7 @@ class MyModel:
 		return  self.model
 
 	#Define Parameters to set up stock
-	def define_model(self, lookup_step, stock, n_steps=100, test_size=0.2, n_layers = 2, units=256, dropout=0.4, epochs=100):
+	def define_model(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.4, epochs=50):
 
 		#Number of days used for each prediction
 		 self.N_STEPS = n_steps
@@ -360,7 +364,7 @@ class MyModel:
 
 
 	#Create from scratch and display
-	def __init__(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.3, epochs=100):
+	def __init__(self, lookup_step, stock, n_steps=50, test_size=0.2, n_layers = 2, units=256, dropout=0.3, epochs=50):
 
 
 		if not os.path.isdir("results"):
@@ -389,11 +393,32 @@ class MyModel:
 		print("Total profit:", self.total_profit)
 		print("Profit per trade:", self.profit_per_trade)
 
-		self.plot.show()
+		#add to db
+		try:
+			with sql.connect("database.db") as con:
+				cur = con.cursor()
+
+				#insert
+				sss = ("INSERT INTO models (lookup_step, stock, n_steps, updateDate, modelName) VALUES (?,?,?,?,?);")
+
+				ss = (int(self.LOOKUP_STEP), self.ticker, int(self.N_STEPS), self.date.strftime("%Y-%d-%m"), self.model_name)
+
+				cur.execute(sss, ss)
+				print("Successfully inserted model into database")
+				con.commit()
+		except:
+			print("Something went wrong attempting to insert model into database")
+		finally:
+			return
+		#self.plot.show()
 
 	#Have saved model
-	def __init__( self, model_name, loss = "huber_loss", n_steps = 50, feature_columns = ["adjclose", "volume", "open", "high", "low"], units = 256, dropout = 0.4, epochs=50):
+	@classmethod
+	def fromModel(self, model_name, loss = "huber_loss", n_steps = 50, feature_columns = ["adjclose", "volume", "open", "high", "low"], units = 256, dropout = 0.4, epochs=50):
 
+		#create self
+		self = self.__new__(self)
+		
 		#get model name format
 		splitModelName = model_name.split("_")
 		print(splitModelName)
@@ -403,7 +428,7 @@ class MyModel:
 		lookup_step = int(s_lookup_step)
 		self.LOSS = loss
 		self.model_name = model_name
-
+		FEATURE_COLUMNS = feature_columns
 		#print(date)
 		print(stock)
 		print(lookup_step)
@@ -418,13 +443,13 @@ class MyModel:
 		if not os.path.isdir("plots"):
 			os.mkdir("plots")
 
-
+		print(len(FEATURE_COLUMNS))
 		#build needed variables
 		self.N_STEPS = n_steps 
 		self.LOOKUP_STEP = lookup_step
 		self.ticker = stock
 		self.date = datetime.strptime(date_file, "%Y-%m-%d").date()
-		self.model = self.create_model(self.N_STEPS, len(feature_columns), loss = loss, units = units)
+		self.model = self.create_model(sequence_length=n_steps, n_features=5, loss = loss, units = units)
 
 		#load model from save
 		self.load_model(path=os.path.join("results", self.model_name + ".h5"))

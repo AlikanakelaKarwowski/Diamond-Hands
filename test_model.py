@@ -22,4 +22,6 @@ def makeModel(ticker, days=30, n_step=50):
 	#SP500 = makeModel("^GSPC",day)
 	#GME = makeModel("GME",day)
 
-model = MyModel("2021-04-26_^DJI_180days")
+model = MyModel(30, "AMZN", epochs=2)
+
+a = MyModel.fromModel("2021-04-26_^DJI_180days")

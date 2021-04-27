@@ -19,7 +19,7 @@ sqlQuery2 = """ CREATE TABLE IF NOT EXISTS models (
 	lookup_step INTEGER NOT NULL,
 	stock TEXT NOT NULL,
 	n_steps INTEGER NOT NULL,
-	updateDate DATE NOT NULL, 
+	updateDate TEXT NOT NULL, 
 	modelName TEXT NOT NULL)
 """
 cursor.execute(sqlQuery2)
