@@ -23,6 +23,7 @@ class User:
 # 157.230.63.172 
 @app.route("/", methods=['POST', 'GET'])
 def index():
+    session['user_status'] = 'logged_out'
     if request.method == 'POST':
         stock_info = request.form['content']
     return render_template('index.html')
