@@ -39,7 +39,7 @@ class MyModel:
 	
 
 
-	def load_data(self, ticker, n_steps=50, lookup_step=1, split_by_date=True,
+	def load_data(self, ticker, n_steps=50, lookup_step=1,
 					test_size=0.2, feature_columns=['adjclose', 'volume', 'open', 'high', 'low']):
 		"""
 		Loads data from Yahoo Finance source, as well as scaling, shuffling, normalizing and splitting.
@@ -107,20 +107,8 @@ class MyModel:
 		# convert to numpy arrays
 		X = np.array(X)
 		y = np.array(y)
-		if split_by_date:
-			# split the dataset into training & testing sets by date (not randomly splitting)
-			train_samples = int((1 - test_size) * len(X))
-			result["X_train"] = X[:train_samples]
-			result["y_train"] = y[:train_samples]
-			result["X_test"]  = X[train_samples:]
-			result["y_test"]  = y[train_samples:]
-
-		# shuffle the datasets for training 
-			shuffle_in_unison(result["X_train"], result["y_train"])
-			shuffle_in_unison(result["X_test"], result["y_test"])
-		else:	
 			# split the dataset randomly
-			result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, 
+		result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, 
 																					test_size=test_size)
 		# get the list of test set dates
 		dates = result["X_test"][:, -1, -1]
@@ -203,11 +191,8 @@ class MyModel:
 		 self.model_name = f"{date_now}_{self.ticker}_{self.LOOKUP_STEP}days"
 
 		 # At 6 months and longer a larger range of test data becomes more and more important than just simply using hte end of the tail
-		 split_by_date = True
-		 if self.LOOKUP_STEP > 179:
-		 	split_by_date = False
 
-		 self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step= self.LOOKUP_STEP, test_size= TEST_SIZE, feature_columns=FEATURE_COLUMNS, split_by_date=split_by_date)
+		 self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step= self.LOOKUP_STEP, test_size= TEST_SIZE, feature_columns=FEATURE_COLUMNS)
 
 
 		 #save dataframe
@@ -463,7 +448,7 @@ class MyModel:
 		if self.LOOKUP_STEP > 179:
 		 	split_by_date = False
 
-		self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step=self.LOOKUP_STEP, split_by_date=split_by_date)
+		self.data = self.load_data(self.ticker, self.N_STEPS, lookup_step=self.LOOKUP_STEP)
 
 
 
