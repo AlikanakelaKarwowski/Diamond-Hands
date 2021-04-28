@@ -277,12 +277,12 @@ class MyModel:
 		#add true to dataprice
 		test_df[f"true_adjclose_{self.LOOKUP_STEP}"] = y_test
 
-		self.current = final_dataframe["adjclose"]
+		
 
 		#sort the df by date
 		test_df.sort_index(inplace=True)
 		final_dataframe = test_df
-
+		self.current = final_dataframe["adjclose"]
 		#add the buy profit column
 		final_dataframe["buy_profit"] = list(map(buy_profit, 
 									final_dataframe["adjclose"], 
