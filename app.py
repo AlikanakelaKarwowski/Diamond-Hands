@@ -46,39 +46,9 @@ def stocks():
     current = 0
 
     if request.method == 'POST':
-        #stock_info = request.form['content']
-        #stockName, timeselect
         
         timeSelect = request.form['TimeSelector']
         stockTicker = request.form['StockSelector']
-        #stockSelect = {"AMZN":"AMNZ","": "AMZN", "NDAQ": "^IXIC", "S&P500": "^GSPC", "DJI": "^DJI", "TSLA":"TSLA", "AAPL":"AAPL","MSFT":"MSFT", "NIO":"NIO", "NVDA":"NVDA", "FB":"FB", "TWTR":"TWTR", "WMT":"WMT"}
-        #timeS = {"": 15, "15 Day": 15, "1 Month": 30,
-                 #"2 Months": 60, "3 Months": 90, "6 Months": 180, "1 Year": 365, "2 Years": 730}
-        # if stockTicker == "NDAQ":
-        #     stockTicker = "^IXIC"
-        # if stockTicker == "S&P500":
-        #     stockTicker = "^GSPC"
-        # if stockTicker == "DJI":
-        #     stockTicker = "^DJI"
-
-        # if timeSelect == "15 Day":
-        #     timeSelect = 15
-        # if timeSelect == "1 Month":
-        #     timeSelect = 30
-        # if timeSelect == "2 Months":
-        #     timeSelect = 60
-        # if timeSelect == "3 Months":
-        #     timeSelect = 90
-        # if timeSelect == "6 Months":
-        #     timeSelect = 180
-        # if timeSelect == "1 Year":
-        #     timeSelect = 365
-        # if timeSelect == "2 Years":
-        #     timeSelect = 365*2
-       # print(timeS[timeSelect])
-       # print(stockSelect[stockTicker])
-        #stockTicker = stockSelect[stockTicker]
-        #timeSelect = timeS[timeSelect]
         #SQL Call
         try:
             with sql.connect("database.db") as con:
@@ -88,12 +58,9 @@ def stocks():
                # values = (stockTicker, timeSelect)
                 print(query)
                 cur.execute(query)
-                print("hi2")
                 myResult = cur.fetchone()
                 
                 myModelName = myResult[0]
-                #myDate = myResult[1]
-                print(myResult)
                 tz = pytz.timezone("US/Eastern")
                 date_now = datetime.now(tz).date()
                 myStock = MyModel.fromModel(myModelName)
@@ -119,8 +86,6 @@ def stocks():
         except Exception as e:
             print(e)
 
-    print(imagePath)
-    print("hi")
     return render_template('stocks.html', imagePath = imagePath, output=output, current = round(current,2), pred_value= round(pred_value,2), profit_value = round(profit_value,2), percentage_value= round(percentage_value,4), conclusion= conclusion)
 
 @app.route("/contact", methods=['POST', 'GET'])
