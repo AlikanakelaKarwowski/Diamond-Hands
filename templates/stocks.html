@@ -11,6 +11,34 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stocks.css') }}">
+
+    <style>
+        .output{
+            width: 200px;
+            height: 200px;
+            margin-left: 24%;
+            margin-top: -175px;
+            border: 2px solid transparent;
+            border-radius: 25px;
+            background-image: linear-gradient(#42455a, #42455a), radial-gradient(circle at top left, #fd00da, #19d7f8);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            position: absolute;
+        }
+
+        .output-div{
+            background: #2e303f;
+            width: 200px;
+            height: 200px;
+            border-radius: 25px;
+            position: absolute;
+        }
+
+        .output-div p{
+            text-align: center;
+            color: #b2b2b2;
+        }
+</style>
 </head>
 
 <body>
@@ -48,7 +76,7 @@
                             <option value="FB"> FB </option>
                             <option value="TWTR"> TWTR </option>
                             <option value="WMT"> WMT </option>
-                            <option value="INX"> INX </option>
+                            <option value="S&P500"> S&P500 </option>
                         </select>
                     </span>
                     <input type="submit" value="Predict!" class="sub-btn">
@@ -59,20 +87,23 @@
         <div class="stock-graph">
             <img src="{{imagePath}}" class="graph-pic">
         </div>
+        {%endif%}
         <div class="output">
             <div class="output-div">
                 <!-- <p>{{output}}</p> -->
-                <p class="CurrentTicker">Current: 1327.75</p><!--Current-->
+                <p class="CurrentTicker">Current: {{current}}</p><!--Current-->
                 
-                <p class="PredictedTicker">Predicted: 1380.99</p><!--Predicted-->
+                <p class="PredictedTicker">Predicted: {{pred_value}}</p><!--Predicted-->
                
-                <p class="PreciseProfit">Profit: 53.24</p><!--Precise Profit-->
+                <p class="PreciseProfit">Profit: {{profit_value}}</p><!--Precise Profit-->
                 
-                <p class="PercentageProfit">Percentage: 4%</p><!--% Profit-->
+                <p class="PercentageProfit">Percentage: {{percentage_value}}%</p><!--% Profit-->
+
+                <p class="Conclusion">Conclusion: {{conclusion}}</p>
                 
             </div>
         </div>
-        {%endif%}
+        
     </div>
 </body>
 

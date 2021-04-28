@@ -72,6 +72,8 @@ class MyModel:
 		if "date" not in df.columns:
 			df["date"] = df.index
 		column_scaler = {}
+		self.current = df['adjclose'].iloc[-1]
+		print(self.current)
 		# scale the data (prices) from 0 to 1
 		for column in feature_columns:
 			scaler = preprocessing.MinMaxScaler()
@@ -120,8 +122,7 @@ class MyModel:
 			shuffle_in_unison(result["X_test"], result["y_test"])
 		else:	
 			# split the dataset randomly
-			result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, 
-																					test_size=test_size)
+			result["X_train"], result["X_test"], result["y_train"], result["y_test"] = train_test_split(X, y, test_size=test_size)
 		# get the list of test set dates
 		dates = result["X_test"][:, -1, -1]
 		# retrieve test features from the original dataframe
@@ -277,12 +278,11 @@ class MyModel:
 		#add true to dataprice
 		test_df[f"true_adjclose_{self.LOOKUP_STEP}"] = y_test
 
-		
+
 
 		#sort the df by date
 		test_df.sort_index(inplace=True)
 		final_dataframe = test_df
-		self.current = final_dataframe["adjclose"]
 		#add the buy profit column
 		final_dataframe["buy_profit"] = list(map(buy_profit, 
 									final_dataframe["adjclose"], 

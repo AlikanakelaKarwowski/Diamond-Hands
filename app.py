@@ -10,6 +10,7 @@ import sqlite3 as sql
 import database
 from model import *
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_ERI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = "seniorseminar2021"
@@ -38,6 +39,12 @@ import pytz
 def stocks():
     imagePath = ""
     output=""
+    conclusion = ""
+    percentage_value = 0
+    profit_value = 0
+    pred_value = 0
+    current = 0
+
     if request.method == 'POST':
         #stock_info = request.form['content']
         #stockName, timeselect
@@ -47,8 +54,8 @@ def stocks():
 
         if stockTicker == "NDAQ":
             stockTicker = "^IXIC"
-        if stockTicker == "INX":
-            stockTicker = "^INX"
+        if stockTicker == "S&P500":
+            stockTicker = "^GSPC"
         if stockTicker == "DJI":
             stockTicker = "^DJI"
 
@@ -65,7 +72,7 @@ def stocks():
         if timeSelect == "1 Year":
             timeSelect = 365
         if timeSelect == "2 Years":
-            timeSelect = 362*2
+            timeSelect = 365*2
         print(timeSelect)
         print(stockTicker)
         #SQL Call
@@ -90,15 +97,27 @@ def stocks():
                 
 
                 imagePath = "static/docs/upload/plots/{}_{}days_{}.png".format(stockTicker, timeSelect, date_now)
-                output = myStock.getFuturePrice()
+                pred_value = myStock.getFuturePrice()
                 print("output = {}".format(output))
+                current = myStock.current
+                profit_value = pred_value- current
+                percentage_value = float(1-current/pred_value) * 100
+
+                conclusion = (percentage_value >= 0)
+
+                if conclusion:
+                    conclusion = "Buy"
+                else:
+                    conclusion = "Sell"
+
+
 
         except Exception as e:
             print(e)
 
     print(imagePath)
     print("hi")
-    return render_template('stocks.html', imagePath = imagePath, output=output)
+    return render_template('stocks.html', imagePath = imagePath, output=output, current = round(current,2), pred_value= round(pred_value,2), profit_value = round(profit_value,2), percentage_value= round(percentage_value,4), conclusion= conclusion)
 
 @app.route("/contact", methods=['POST', 'GET'])
 def contact():
