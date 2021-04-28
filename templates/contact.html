@@ -16,7 +16,37 @@
 <body>
     <div class="container">
         {% include 'header.html' %}
-        <h1 style="text-align: center;">Blank Contact Page</h1>
+        <div class="contact_container">
+        <div class="row">
+            <h1>Contact Us</h1>
+        </div>
+        <div class="row">
+            <h4 style="text-align:center">We'd love to hear from you!</h4>
+        </div>
+        <div class="inputForm">
+            <div class="input">
+                <div class="name">
+                    <input type="text" required />
+                    <label>Name</label> 
+                </div>
+            </div>
+            <div class="input">
+                <div class="email">
+                    <input type="text" required />
+                    <label>Email</label> 
+                </div>
+            </div>
+            <div class="input">
+                <div class="message">
+                    <textarea required></textarea>
+                    <label>Message</label>
+                </div>
+            </div>
+            <div class="submit-btn">Send Message</div>
+                
+        </div>
+</div>
+
     </div>
 </body>
 
