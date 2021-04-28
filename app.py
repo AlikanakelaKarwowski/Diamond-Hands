@@ -8,7 +8,7 @@ import io
 import random
 import sqlite3 as sql
 import database
-#from model import *
+from model import *
 
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ def index():
 
 
 from datetime import date, datetime
-#import pytz
+import pytz
 @app.route("/stocks", methods=['POST', 'GET'])
 def stocks():
     imagePath = ""
@@ -51,9 +51,9 @@ def stocks():
         
         timeSelect = request.form['TimeSelector']
         stockTicker = request.form['StockSelector']
-        stockSelect = {"NDAQ": "^IXIC", "S&P500": "^GSPC", "DJI": "^DJI"}
-        timeS = {"15 Day": 15, "1 Month": 30,
-                 "2 Months": 60, "3 Months": 90, "6 Months": 180, "1 Year": 365, "2 Years": 730}
+        #stockSelect = {"AMZN":"AMNZ","": "AMZN", "NDAQ": "^IXIC", "S&P500": "^GSPC", "DJI": "^DJI", "TSLA":"TSLA", "AAPL":"AAPL","MSFT":"MSFT", "NIO":"NIO", "NVDA":"NVDA", "FB":"FB", "TWTR":"TWTR", "WMT":"WMT"}
+        #timeS = {"": 15, "15 Day": 15, "1 Month": 30,
+                 #"2 Months": 60, "3 Months": 90, "6 Months": 180, "1 Year": 365, "2 Years": 730}
         # if stockTicker == "NDAQ":
         #     stockTicker = "^IXIC"
         # if stockTicker == "S&P500":
@@ -75,10 +75,10 @@ def stocks():
         #     timeSelect = 365
         # if timeSelect == "2 Years":
         #     timeSelect = 365*2
-        print(timeS[timeSelect])
-        print(stockSelect[stockTicker])
-        stockTicker = stockSelect[stockTicker]
-        timeSelect = timeS[timeSelect]
+       # print(timeS[timeSelect])
+       # print(stockSelect[stockTicker])
+        #stockTicker = stockSelect[stockTicker]
+        #timeSelect = timeS[timeSelect]
         #SQL Call
         try:
             with sql.connect("database.db") as con:

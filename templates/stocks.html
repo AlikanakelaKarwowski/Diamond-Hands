@@ -52,25 +52,25 @@
                     <span class="TimeSelectorLable">
                         <label for="TimeSelector">Select Time </label>
                         <select name="TimeSelector" class="TimeSelector" id="TimeSelector">
-                            <option></option>
-                            <option value="15 Day"> 15 Day </option>
-                            <option value="1 Month"> 1 Month </option>
-                            <option value="2 Months"> 2 Months </option>
-                            <option value="3 Months"> 3 Months </option>
-                            <option value="6 Months"> 6 Months </option>
-                            <option value="1 Year"> 1 Year </option>
-                            <option value="2 Years"> 2 Years </option>
+                            <option value=15></option>
+                            <option value=15> 15 Day </option>
+                            <option value=30> 1 Month </option>
+                            <option value=60> 2 Months </option>
+                            <option value=90> 3 Months </option>
+                            <option value=180> 6 Months </option>
+                            <option value=365> 1 Year </option>
+                            <option value=730> 2 Years </option>
                         </select>
                     </span>
 
                     <span class="StockSelectorLable">
                         <label for="StockSelector" class="StockSelector">Select Stocks</label>
                         <select name="StockSelector" class="StockSelector" id="StockSelector">
-                            <option></option>
+                            <option value="AMZN"></option>
                             <option value="AMZN"> AMZN </option>
                             <option value="TSLA"> TSLA </option>
-                            <option value="NDAQ"> NDAQ </option>
-                            <option value="DJI"> DJI </option>
+                            <option value="^IXIC"> NDAQ </option>
+                            <option value="^DJI"> DJI </option>
                             <option value="AAPL"> AAPL </option>
                             <option value="MSFT"> MSFT </option>
                             <option value="NIO"> NIO </option>
@@ -78,7 +78,7 @@
                             <option value="FB"> FB </option>
                             <option value="TWTR"> TWTR </option>
                             <option value="WMT"> WMT </option>
-                            <option value="S&P500"> S&P500 </option>
+                            <option value="^GSPC"> S&P500 </option>
                         </select>
                     </span>
                     <input type="submit" value="Predict!" class="sub-btn">
