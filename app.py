@@ -51,7 +51,6 @@ def stocks():
         
         timeSelect = request.form['TimeSelector']
         stockTicker = request.form['StockSelector']
-<<<<<<< HEAD
         stockSelect = {"NDAQ": "^IXIC", "S&P500": "^GSPC", "DJI": "^DJI"}
         timeS = {"15 Day": 15, "1 Month": 30,
                  "2 Months": 60, "3 Months": 90, "6 Months": 180, "1 Year": 365, "2 Years": 730}
