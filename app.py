@@ -51,30 +51,34 @@ def stocks():
         
         timeSelect = request.form['TimeSelector']
         stockTicker = request.form['StockSelector']
+        stockSelect = {"NDAQ": "^IXIC", "S&P500": "^GSPC", "DJI": "^DJI"}
+        timeS = {"15 Day": 15, "1 Month": 30,
+                 "2 Months": 60, "3 Months": 90, "6 Months": 180, "1 Year": 365, "2 Years": 730}
+        # if stockTicker == "NDAQ":
+        #     stockTicker = "^IXIC"
+        # if stockTicker == "S&P500":
+        #     stockTicker = "^GSPC"
+        # if stockTicker == "DJI":
+        #     stockTicker = "^DJI"
 
-        if stockTicker == "NDAQ":
-            stockTicker = "^IXIC"
-        if stockTicker == "S&P500":
-            stockTicker = "^GSPC"
-        if stockTicker == "DJI":
-            stockTicker = "^DJI"
-
-        if timeSelect == "15 Day":
-            timeSelect = int(15)
-        if timeSelect == "1 Month":
-            timeSelect = 30
-        if timeSelect == "2 Months":
-            timeSelect = 60
-        if timeSelect == "3 Months":
-            timeSelect = 90
-        if timeSelect == "6 Months":
-            timeSelect = 180
-        if timeSelect == "1 Year":
-            timeSelect = 365
-        if timeSelect == "2 Years":
-            timeSelect = 365*2
-        print(timeSelect)
-        print(stockTicker)
+        # if timeSelect == "15 Day":
+        #     timeSelect = 15
+        # if timeSelect == "1 Month":
+        #     timeSelect = 30
+        # if timeSelect == "2 Months":
+        #     timeSelect = 60
+        # if timeSelect == "3 Months":
+        #     timeSelect = 90
+        # if timeSelect == "6 Months":
+        #     timeSelect = 180
+        # if timeSelect == "1 Year":
+        #     timeSelect = 365
+        # if timeSelect == "2 Years":
+        #     timeSelect = 365*2
+        print(timeS[timeSelect])
+        print(stockSelect[stockTicker])
+        stockTicker = stockSelect[stockTicker]
+        timeSelect = timeS[timeSelect]
         #SQL Call
         try:
             with sql.connect("database.db") as con:
