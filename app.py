@@ -58,9 +58,11 @@ def stocks():
             stockTicker = "^GSPC"
         if stockTicker == "DJI":
             stockTicker = "^DJI"
+        if stockTicker == "":
+            stockTicker = "AMZN"
 
         if timeSelect == "15 Day":
-            timeSelect = int(15)
+            timeSelect = 15
         if timeSelect == "1 Month":
             timeSelect = 30
         if timeSelect == "2 Months":
@@ -73,6 +75,10 @@ def stocks():
             timeSelect = 365
         if timeSelect == "2 Years":
             timeSelect = 365*2
+        if timeSelect == "":
+            timeSelect = 15
+
+
         print(timeSelect)
         print(stockTicker)
         #SQL Call
