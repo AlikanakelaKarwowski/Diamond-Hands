@@ -59,8 +59,18 @@
         <div class="stock-graph">
             <img src="{{imagePath}}" class="graph-pic">
         </div>
-        <div class = "output">
-            <p>{{output}}</p>
+        <div class="output">
+            <div class="output-div">
+                <!-- <p>{{output}}</p> -->
+                <p class="CurrentTicker">Current: 1327.75</p><!--Current-->
+                
+                <p class="PredictedTicker">Predicted: 1380.99</p><!--Predicted-->
+               
+                <p class="PreciseProfit">Profit: 53.24</p><!--Precise Profit-->
+                
+                <p class="PercentageProfit">Percentage: 4%</p><!--% Profit-->
+                
+            </div>
         </div>
         {%endif%}
     </div>

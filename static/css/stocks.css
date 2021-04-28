@@ -148,3 +148,29 @@ body{
 .stock-graph img{
     width: 700px;
 }
+
+.output{
+    width: 200px;
+    height: 150px;
+    margin-left: 24%;
+    margin-top: -155px;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    background-image: linear-gradient(#42455a, #42455a), radial-gradient(circle at top left, #fd00da, #19d7f8);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    position: absolute;
+}
+
+.output-div{
+    background: #2e303f;
+    width: 200px;
+    height: 150px;
+    border-radius: 25px;
+    position: absolute;
+}
+
+.output-div p{
+    text-align: center;
+    color: #b2b2b2;
+}
