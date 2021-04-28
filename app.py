@@ -8,7 +8,8 @@ import io
 import random
 import sqlite3 as sql
 import database
-# from model import *
+from model import *
+import pytz
 
 
 app = Flask(__name__)
@@ -34,7 +35,7 @@ def index():
 
 
 from datetime import date, datetime
-# import pytz
+
 @app.route("/stocks", methods=['POST', 'GET'])
 def stocks():
     imagePath = ""
