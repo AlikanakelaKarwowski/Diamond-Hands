@@ -65,8 +65,6 @@ def stocks():
                 date_now = datetime.now(tz).date()
                 myStock = MyModel.fromModel(myModelName)
 
-                
-
                 imagePath = "static/docs/upload/plots/{}_{}days_{}.png".format(stockTicker, timeSelect, date_now)
                 pred_value = myStock.getFuturePrice()
                 print("output = {}".format(output))
@@ -80,8 +78,6 @@ def stocks():
                     conclusion = "Buy"
                 else:
                     conclusion = "Sell"
-
-
 
         except Exception as e:
             print(e)
@@ -488,24 +484,6 @@ def updateUsernameAttempt():
         else:
             msg = "Current password is incorrect. Please try again."
             return render_template('updatePassword.html', msg = msg)
-
-@app.route('/plot.png')
-def plot_png():
-    getvar = "postwas"
-    fig = create_figure("Stock", 5)
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
-
-def create_figure(Stock, Time):
-    #lr = LinearRegression()
-    #lr.predict(Stock, Time)
-    fig = Figure()
-    axis = fig.add_subplot(1,1,1)
-    xs = range(6)
-    ys = [random.randint(1,50) for x in xs]
-    axis.plot(xs, ys)
-    return fig
 
 def usernameExists(username):
     #Check if username is already in database
