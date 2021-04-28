@@ -18,10 +18,12 @@
     {% include 'header.html' %}
         <form action="/mypage" method="post" class="mypageForm">
             <h2>My Page</h2>
-            <li><a href="/updateName"><span class="not-active">Update name</span></a></li>
-            <li><a href="/updateEmail"><span class="not-active">Update email</span></a></li>
-            <li><a href="/updatePassword"><span class="not-active">Update password</span></a></li>
-            <li><a href="/updateUsername"><span class="not-active">Update username</span></a></li>
+            <div class="ProfUpdaters">
+                <li><a href="/updateName"><span class="not-active">Update name</span></a></li>
+                <li><a href="/updateEmail"><span class="not-active">Update email</span></a></li>
+                <li><a href="/updatePassword"><span class="not-active">Update password</span></a></li>
+                <li><a href="/updateUsername"><span class="not-active">Update username</span></a></li>
+            </div>
             <div>
                 {% if session['user_status'] == 'logged_in' %}
                 <div class="app-text">
