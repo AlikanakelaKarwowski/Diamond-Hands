@@ -152,6 +152,7 @@ def signup():
 @app.route("/signupAttempt", methods=['POST', 'GET'])
 def signupAttempt():
     #Redirect user if already logged in
+    msg = ""
     if session['user_status'] == 'logged_in':
         return render_template('index.html')
 
@@ -207,6 +208,7 @@ def index2():
 
 @app.route('/list')
 def list():
+    rows = ""
     con = sql.connect("database.db")
     con.row_factory = sql.Row
     
@@ -253,6 +255,9 @@ def updateName():
 
 @app.route("/updateNameAttempt", methods=['POST', 'GET'])
 def updateNameAttempt():
+    email = ""
+    username =""
+    name = ""
     if request.method == 'POST':
         #Check for any empty forms
         if not request.form['name'] or not request.form['name2']:
@@ -308,6 +313,9 @@ def updateEmail():
 
 @app.route("/updateEmailAttempt", methods=['POST', 'GET'])
 def updateEmailAttempt():
+    email = ""
+    name = ""
+    username=""
     if request.method == 'POST':
         #Check for any empty forms
         if not request.form['email'] or not request.form['email2']:
@@ -363,6 +371,7 @@ def updatePassword():
 
 @app.route("/updatePasswordAttempt", methods=['POST', 'GET'])
 def updatePasswordAttempt():
+    msg = ""
     if request.method == 'POST':
         #Check for any empty forms
         if not request.form['currentPassword'] or not request.form['newPassword']or not request.form['newPassword2']:
@@ -424,6 +433,7 @@ def updateUsername():
 
 @app.route("/updateUsernameAttempt", methods=['POST', 'GET'])
 def updateUsernameAttempt():
+    msg = ""
     if request.method == 'POST':
         #Check for any empty forms
         if not request.form['currentPassword'] or not request.form['newUsername']or not request.form['newUsername2']:
