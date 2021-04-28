@@ -2,3 +2,4 @@ LinuxVenv/
 WinVenv/
 .DS_Store
 database.db
+__pychache__/
